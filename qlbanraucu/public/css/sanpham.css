@@ -1,0 +1,241 @@
+.lk {
+    font-size: 15px;
+    padding: 15px;
+    height: 40px;
+    display: flex;
+    width: 100%;
+    font-weight: 500;
+}
+.lk__tc {
+    color: var(--text-color);
+    text-decoration: none;
+    padding-right: 8px
+}
+.lk__tc:hover {
+    color: #f7631c;
+}
+.lk__tensp {
+    color: #565555;;
+}
+.app {
+
+}
+.app__sp-tt {
+    margin: 20px 0 40px 90px;
+    display: flex; /* Sử dụng Flexbox */
+    flex-wrap: nowrap; /* Đảm bảo các phần tử không xuống dòng */
+    gap: 10px; /* Khoảng cách giữa các phần tử */
+    max-width: 1220px;
+}
+.app__sp-tt .row, .app__sp-tt .colc-5, .app__sp-tt .colc-3 {
+    flex: 1; /* Đảm bảo các phần tử con chia đều không gian */
+}
+.app__sp-tt .colc-5 {
+    line-height: 20px;
+    margin-left: 34px;
+    flex: 2; /* Tăng gấp đôi không gian cho phần nội dung chính */
+}
+.app__sp-tt .row img {
+    width: 400px;
+    height: auto;
+}
+.app__sp-tt .row {
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 22px;
+}
+
+.row-img-sp {
+    border-radius: 8px;
+    box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+.app__sp-tt {
+    padding: 8px;
+    position: relative;
+    margin-top: 10px;
+    height: auto;
+}
+.content {
+    padding: 8px;
+    position: relative;
+    margin-top: 10px;
+    height: auto;
+}
+
+.app__sp-tt .container {
+    position: relative;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.star {
+    color: var(--star-gold-color);
+    margin-top: 6px;
+}
+
+.star .sp-eval a {
+    color: #f7631c;
+    text-decoration: none;
+}
+
+.star .sp-eval a:hover {
+    text-decoration: underline;
+}
+
+.price {
+    margin-top: 6px;
+}
+
+.price .price__up {
+    text-decoration: line-through;
+    color: gray;
+    font-size: 14px;
+}
+
+.price .price__down {
+    color: red;
+    margin-left: 15px;
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.cart-add {
+    background-color: #f7631c;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    padding: 13px;
+    cursor: pointer;
+    border-radius: 30px;
+    width: 70%;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.cart-add:hover {
+    background-color: #f7631c;
+}
+
+.nd {
+    position: relative;
+    width: 100%;
+    border: 1px solid #f7631c;
+    margin-top: 15px;
+    border-radius: 6px;
+}
+.nd1 {
+    position: relative;
+    width: 100%;
+    border: 1px solid #f7631c;
+    margin-top: 50px;
+    border-radius: 6px;
+}
+
+.nd .title, .nd1 .title {
+    color: white;
+    background-color: #f7631c;
+    font-weight: bold;
+    font-size: 13px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 8px;
+    position: absolute;
+    top: -20px;
+    left: 15px;
+}
+
+.nd .content, .nd1 .content {
+    border: none;
+    margin-top: 15px;
+    padding: 0 20px;
+    height: auto;
+    font-size: 13px;
+    line-height: 24px;
+}
+
+.describe {
+    margin: 20px 0 40px 90px;
+    max-width: 1220px;
+    padding: 0 10px;
+    line-height: 24px;
+    font-weight: 500;
+    font-size: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid black;
+}
+
+.describe .title1 {
+    color: var(--text-color);
+    border-bottom: 1px solid black;
+    font-size: 20px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+.describe__img {
+    margin: 9px 125px;
+    border-radius: 4px;
+    box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+
+.row {
+    display: flex;
+    line-height: 22px;
+}
+.sptt {
+    margin: 20px 0 40px 90px;
+}
+.gift {
+    position: relative;
+    width: 100%;
+    max-height: 165px;
+    border: 1px solid #f7631c;
+    margin-top: 100px;
+    border-radius: 6px;
+}
+
+.gift .title {
+    color: white;
+    background-color: #f7631c;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 20px;
+    text-align: center;
+    padding: 8px;
+    width: 250px;
+    position: absolute;
+    top: -20px;
+    left: 15px;
+}
+
+.gift .content {
+    font-weight: 500;
+    font-size: 13px;
+    border: none;
+    margin-top: 20px;
+    line-height: 28px;
+    padding: 0px 20px;
+    height: auto;
+}
+
+.product_title {
+    background-color: #f7631c;
+    height: 24px;
+    width: 20%;
+    text-align: left;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    border-radius: 20px;
+}
+.product_title-b {
+    text-decoration: none;
+    color: var(--white-color);
+    margin-left: 30px;
+    font-size: 17px;
+}
+

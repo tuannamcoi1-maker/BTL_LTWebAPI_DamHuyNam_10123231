@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng của bạn</title>
+    <link rel="stylesheet" href="/css/btlon.css">
+    <link rel="stylesheet" href="/css/giohang.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        /* CSS chỉnh nhanh cho form thanh toán */
+        .payment-form { margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 15px; }
+        .form-group { margin-bottom: 10px; }
+        .form-control { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .header__navbar-user-img { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+        .header__navbar-user-name { margin-left: 4px; font-size: 1.4rem; font-weight: 400; }
+        /* Ẩn hiện menu user */
+        .header__navbar-user-menu {
+            position: absolute; z-index: 1; padding-left: 0; top: 100%; right: 0;
+            background-color: white; border-radius: 2px; width: 160px; list-style: none;
+            box-shadow: 0 1px 2px #e0e0e0; display: none; 
+        }
+        .header__navbar-user:hover .header__navbar-user-menu { display: block; }
+        .header__navbar-user-item a, .header__navbar-user-item button {
+            text-decoration: none; color: #333; font-size: 1.4rem; padding: 8px 16px; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+        }
+        .header__navbar-user-item a:hover, .header__navbar-user-item button:hover { background-color: #fafafa; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="grid">
+                <nav class="header__navbar">
+                    <ul class="header__navbar-list">
+                        <li class="header__navbar-item">
+                            Kết nối <a href="#" class="header__navbar-icon-link"><i class="header__navbar-icon fa-brands fa-facebook"></i></a>
+                        </li>
+                    </ul>
+                    <ul class="header__navbar-list">
+                        <span id="boxrighttop" class="kh-login">
+                            <li class="header__navbar-item"><a href="/dang-ky" class="header__navbar-item-link header__navbar-item--separate">Đăng Ký</a></li>
+                            <li class="header__navbar-item"><a href="/dang-nhap" class="header__navbar-item-link">Đăng Nhập</a></li>
+                        </span>
+
+                        <span id="boxrighttopKH" style="display: none;" class="dntc">
+                            <li class="header__navbar-item header__navbar-user" style="position: relative;">
+                                <span id="i" class="tk" style="display: flex; align-items: center; cursor: pointer;">
+                                    <img src="/img/lovepik-avatar-png-image_401175186_wh1200.png" alt="" class="header__navbar-user-img">
+                                    <span id="tenkhachhang" class="header__navbar-user-name">User</span> 
+                                </span>
+                                <ul class="header__navbar-user-menu">
+                                    <li class="header__navbar-user-item"><a href="#">Tài khoản của tôi</a></li>
+                                    <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                        <button onclick="logout()">Đăng xuất</button>
+                                    </li>
+                                </ul>
+                            </li>
+                        </span>
+                    </ul>
+                </nav>
+
+                <div class="header-with-search">
+                    <div class="header__logo">
+                        <a href="/trang-chu" class="header__logo-link">
+                            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="header__logo-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="app__container app__container-size">
+            <div class="grid">
+                <div class="row">
+                    <div class="colf-9 colf-s-12 padding-table">
+                        <div class="title">Giỏ hàng của bạn</div>
+                        <table class="table-prod">
+                            <thead>
+                                <tr>
+                                    <th>Ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>SL</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody">
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <div class="colf-3 colf-s-12 right padding-table">
+                        <table class="table-right">
+                            <tr><td colspan="2" class="title">TỔNG TIỀN</td></tr>
+                            <tr>
+                                <td>Tổng cộng:</td>
+                                <td class="price" id="totalPrice">0₫</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="payment-form">
+                            <h4>Thông tin thanh toán</h4>
+                            <div class="form-group">
+                                <label>Chọn ngân hàng:</label>
+                                <select id="bankName" class="form-control">
+                                    <option value="">-- Chọn ngân hàng --</option>
+                                    <option value="Vietcombank">Vietcombank</option>
+                                    <option value="MBBank">MB Bank</option>
+                                    <option value="Techcombank">Techcombank</option>
+                                    <option value="Agribank">Agribank</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Số tài khoản:</label>
+                                <input type="text" id="bankAccount" class="form-control" placeholder="Nhập số tài khoản...">
+                            </div>
+                        </div>
+
+                        <div class="pay">
+                            <button onclick="thanhToan()" style="width:100%; padding:15px; background: #E34426; color:white; border:none; cursor:pointer; font-weight:bold; font-size: 16px;">
+                                THANH TOÁN NGAY
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var currentUser = null;
+        var cartData = [];
+
+        // 1. Khi trang web tải xong
+        $(document).ready(function() {
+            checkLoginStatus();
+        });
+
+        // Hàm kiểm tra đăng nhập & Hiển thị Header
+        function checkLoginStatus() {
+            var userStr = localStorage.getItem("currentUser");
+            if (userStr) {
+                // Đã đăng nhập
+                currentUser = JSON.parse(userStr);
+                $('#tenkhachhang').text(currentUser.ho_ten);
+                $('#boxrighttop').hide();      // Ẩn nút Đăng ký/Đăng nhập
+                $('#boxrighttopKH').show();    // Hiện Avatar
+                loadCart();                    // Tải giỏ hàng
+            } else {
+                // Chưa đăng nhập
+                $('#boxrighttop').show();
+                $('#boxrighttopKH').hide();
+                alert("Bạn cần đăng nhập để xem giỏ hàng!");
+                window.location.href = "/dang-nhap";
+            }
+        }
+
+        // Hàm Đăng xuất
+        function logout() {
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("username");
+            window.location.href = "/dang-nhap";
+        }
+
+        // Hàm lấy dữ liệu giỏ hàng
+        function loadCart() {
+            if(!currentUser) return;
+            fetch('/api/gio-hang/' + currentUser.ma_nguoi_dung)
+            .then(res => res.json())
+            .then(data => {
+                cartData = data;
+                renderCart(data);
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Hàm hiển thị giỏ hàng
+        function renderCart(items) {
+            var html = '';
+            var total = 0;
+            
+            if(items.length === 0) {
+                $('#cartBody').html('<tr><td colspan="5" style="text-align:center; padding:20px;">Giỏ hàng trống</td></tr>');
+                $('#totalPrice').text('0₫');
+                return;
+            }
+
+            items.forEach(item => {
+                var thanhTien = item.gia_ban * item.so_luong;
+                total += thanhTien;
+                
+                html += `
+                    <tr>
+                        <td><img src="/img/${item.anh_dai_dien}" width="60"></td>
+                        <td>${item.ten_san_pham}</td>
+                        <td style="color: #d0011b; font-weight: bold;">${item.gia_ban.toLocaleString()}₫</td>
+                        <td>${item.so_luong}</td>
+                        <td>
+                            <button onclick="xoaItem(${item.ma_gio_hang})" style="color:red; cursor:pointer; border:none; background:none;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            $('#cartBody').html(html);
+            $('#totalPrice').text(total.toLocaleString() + '₫');
+        }
+
+        // Hàm xóa sản phẩm
+        function xoaItem(idGioHang) {
+            if(!confirm("Bạn chắc chắn muốn xóa?")) return;
+            fetch('/api/gio-hang/xoa/' + idGioHang, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => { if(data.success) loadCart(); });
+        }
+
+        // --- HÀM THANH TOÁN (CÓ BẮT LỖI) ---
+        function thanhToan() {
+            // 1. Kiểm tra đăng nhập
+            if (!currentUser) {
+                alert("Vui lòng đăng nhập lại!");
+                window.location.href = "/dang-nhap";
+                return;
+            }
+
+            // 2. Kiểm tra giỏ hàng trống
+            if(cartData.length === 0) {
+                alert("Giỏ hàng đang trống, không thể thanh toán!");
+                return;
+            }
+
+            // 3. Lấy dữ liệu từ ô nhập
+            var bankName = $('#bankName').val();
+            var bankAccount = $('#bankAccount').val().trim();
+
+            // 4. BẮT LỖI (VALIDATION)
+            if (bankName === "") {
+                alert("Vui lòng CHỌN NGÂN HÀNG để thanh toán!");
+                $('#bankName').focus(); // Đưa con trỏ chuột vào ô này
+                return;
+            }
+
+            if (bankAccount === "") {
+                alert("Vui lòng NHẬP SỐ TÀI KHOẢN!");
+                $('#bankAccount').focus();
+                return;
+            }
+
+            // Kiểm tra số tài khoản có chứa chữ cái không (Chỉ cho phép số)
+            // Biểu thức chính quy: /^\d+$/ nghĩa là chỉ chứa các ký tự số từ đầu đến cuối
+            if (!/^\d+$/.test(bankAccount)) {
+                alert("Lỗi: Số tài khoản KHÔNG ĐƯỢC CHỨA CHỮ cái hoặc ký tự đặc biệt!");
+                $('#bankAccount').focus();
+                return;
+            }
+
+            if(!confirm("Xác nhận thanh toán đơn hàng?")) return;
+
+            // Tính tổng tiền
+            var total = cartData.reduce((acc, item) => acc + (item.gia_ban * item.so_luong), 0);
+            
+            // Gộp thông tin ngân hàng vào ghi chú để gửi về server
+            var ghiChuGiaoDich = `Thanh toán qua: ${bankName} - STK: ${bankAccount}`;
+
+            // 5. Gửi về Server
+            fetch('/api/thanh-toan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ma_nguoi_dung: currentUser.ma_nguoi_dung,
+                    tong_tien: total,
+                    dia_chi: currentUser.dia_chi || "Địa chỉ mặc định",
+                    ghi_chu: ghiChuGiaoDich
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("✅ Đặt hàng thành công!\nMã đơn: " + data.ma_hoa_don + "\nCảm ơn bạn đã mua hàng.");
+                    loadCart(); // Giỏ hàng sẽ trống
+                    // Reset form
+                    $('#bankName').val("");
+                    $('#bankAccount').val("");
+                } else {
+                    alert("❌ Lỗi thanh toán: " + (data.message || "Vui lòng thử lại"));
+                }
+            });
+        }
+    </script>
+</body>
+</html>

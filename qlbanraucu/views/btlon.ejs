@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop NAM FRUIT</title>
+    <link rel="stylesheet" href="/css/btlon.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <script src="/js/TaiKhoan.js"></script>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="grid">
+                <nav class="header__navbar">
+                    <ul class="header__navbar-list">
+                        <li class="header__navbar-item">
+                            Kết nối
+                            <a href="https://www.facebook.com/profile.php?id=100056862950215&mibextid=ZbWKwL" target="blank" class="header__navbar-icon-link">
+                                <i class="header__navbar-icon fa-brands fa-facebook"></i></a>
+                        </li>
+                    </ul>
+                    <ul class="header__navbar-list">
+                        <li class="header__navbar-item header__navbar-item--has-notify">
+                            <a href="" class="header__navbar-item-link">
+                                <i class="header__navbar-icon fa-solid fa-bell"></i>
+                                Thông Báo</a>
+                            <div class="header__notify">
+                                    <header class="header__notify-header">
+                                        <h3>Thông báo mới nhận</h3>
+                                    </header>
+                                    <ul class="header__notify-list">
+                                        <li class="header__notify-item header__notify-item--viewed">
+                                            <a href="" class="header__notify-link">
+                                                <img src="/img/AnTraiCay.webp" alt="" class="header__notify-img">
+                                                <div class="header__notify-info">
+                                                    <span class="header__notify-name">Lợi ích “không tưởng” của việc ăn trái cây thường xuyên</span>
+                                                    <span class="header__notify-descriotion">Ăn trái cây cũng là cách đơn giản để chúng ta bổ sung...</span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <footer class="header__notify-footer">
+                                        <a href="" class="header__notify-footer-btn">Xem tất cả </a>
+                                    </footer>
+                            </div>
+                        </li>
+                        <li class="header__navbar-item">
+                            <a href="#" class="header__navbar-item-link">
+                                <i class="header__navbar-icon fa-solid fa-circle-question"></i>
+                                Trợ Giúp</a>
+                        </li>
+                        
+                        <span id="boxrighttop" class="kh-login">
+                            <li class="header__navbar-item">
+                                <a href="/dang-ky" id="signupLink" class="header__navbar-item-link header__navbar-item--separate">Đăng Ký</a>
+                            </li>
+                            <li class="header__navbar-item">
+                                <a href="/dang-nhap" id="loginLink" class="header__navbar-item-link">Đăng Nhập</a>
+                            </li>
+                        </span>
+
+                        <span id="boxrighttopKH" style="display: none;" class="dntc">
+                            <li class="header__navbar-item header__navbar-user">
+                                <span id="i" class="tk">
+                                    <img src="/img/lovepik-avatar-png-image_401175186_wh1200.png" alt="" class="header__navbar-user-img">
+                                    <span id="tenkhachhang" class="header__navbar-user-name"></span> 
+                                </span>
+                                <ul class="header__navbar-user-menu">
+                                    <li class="header__navbar-user-item">
+                                        <a href="">Tài khoản của tôi</a>
+                                    </li>
+                                    <li   class="header__navbar-user-item header__navbar-user-item--separate">
+                                        <button class="dx" onclick="logout()"><span class="dx-1">Đăng xuất</span></button>
+                                    </li>
+                                </ul>
+                            </li>
+                        </span>
+                    </ul>
+                </nav>
+
+                <div class="header-with-search">
+                    <div class="header__logo">
+                        <a href="/trang-chu" class="header__logo-link">
+                            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" alt="" class="header__logo-img">
+                        </a>
+                    </div>
+                    <div class="header__search">
+                        <div class="header__search-input-wrap">
+                            <input type="text" class="header__search-input" placeholder="Tìm kiếm sản phẩm ">
+                            <div class="header__search-history">
+                                <h3 class="header__search-history-heading">Lịch sử tìm kiếm</h3>
+                            </div>
+                        </div>
+                        <button class="header__search-btn">
+                            <i class="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+
+                    <div class="header__cart">
+                       <div class="header__cart-wrap">
+                            <a href="/gio-hang">
+                            <i class="header__cart-icon fa-solid fa-cart-plus"></i></a>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header> 
+
+        <div class="app__container">
+            <div class="grid">
+                <div class="grid__row app__content">
+                    <div class="grid__column-2">
+                        <nav class="category">
+                            <h3 class="category__heading">
+                                <i class="category__heading-icon fa-solid fa-list"></i>
+                                Danh mục 
+                            </h3>
+                            <ul class="category-list">
+                                <li class="category-item <%= !currentCat ? 'category-item--actice' : '' %>">
+                                    <a href="/trang-chu" class="category-item__link">Tất cả sản phẩm</a>
+                                </li>
+
+                                <% if(categories && categories.length > 0) { %>
+                                    <% categories.forEach(function(cat) { %>
+                                        
+                                        <li class="category-item <%= currentCat == cat.ma_danh_muc ? 'category-item--actice' : '' %>">
+                                            <a href="/trang-chu?danhmuc=<%= cat.ma_danh_muc %>" class="category-item__link">
+                                                <%= cat.ten_danh_muc %>
+                                            </a>
+                                        </li>
+
+                                    <% }); %>
+                                <% } %>
+                            </ul>
+                        </nav>
+                    </div>
+                    
+                    <div class="grid__column-10">
+                        <div class="home-product">
+                            <div class="grid__row"> 
+                                
+                                <% products.forEach(function(item) { %>
+                                    
+                                    <% 
+                                        var phan_tram_giam = 0;
+                                        if (item.gia_goc && item.gia_goc > item.gia_ban) {
+                                            phan_tram_giam = Math.round(((item.gia_goc - item.gia_ban) / item.gia_goc) * 100);
+                                        }
+                                    %>
+
+                                <div class="grid__column-2-4"> 
+                                    <a href="/chi-tiet-san-pham/<%= item.ma_san_pham %>" class="home-product-item">
+                                        
+                                        <div class="home-product-item__img" 
+                                             style="background-image: url('/img/<%= item.anh_dai_dien %>');">
+                                        </div>
+                                        
+                                        <h4 class="home-product-item__name"><%= item.ten_san_pham %></h4>
+                                        
+                                        <div class="home-product-item__price">
+                                            <span class="home-product-item__price-old"><%= item.gia_goc ? item.gia_goc.toLocaleString() : 0 %>đ</span>
+                                            <span class="home-product-item__price-current"><%= item.gia_ban.toLocaleString() %>đ</span>
+                                        </div>
+
+                                        <div class="home-product-item__action">
+                                             <span class="home-product-item__like"> 
+                                                <i class="home-product-item__like-icon-empty fa-regular fa-heart"></i>
+                                                <i class="home-product-item__like-icon-fill fa-solid fa-heart"></i>
+                                            </span>
+                                            <div class="home-product-item__rating">
+                                                <i class="home-product-item__star--gold fa-solid fa-star"></i>
+                                                <i class="home-product-item__star--gold fa-solid fa-star"></i>
+                                                <i class="home-product-item__star--gold fa-solid fa-star"></i>
+                                                <i class="home-product-item__star--gold fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                            </div>
+                                            <span class="home-prodyct-item__sold">Đang bán chạy</span>
+                                        </div>
+                                        
+                                        <div class="home-product-item__origin">
+                                            <span class="home-product-item__brand">Xuất xứ</span>
+                                            <span class="home-product-item__origin-name"><%= item.nguon_goc %></span>
+                                        </div>
+                                        
+                                        <div class="home-product-item__fauvourite">
+                                            <i class="fa-solid fa-check"></i>
+                                            <span>Yêu thích </span>
+                                        </div>
+                                        
+                                        <% if(phan_tram_giam > 0) { %>
+                                        <div class="home-product-item__sale-off">
+                                            <span class="home-product-item__sale-off-percent"><%= phan_tram_giam %>%</span>
+                                            <span class="home-product-item__sale-off-label">GIẢM</span>
+                                        </div>
+                                        <% } %>
+                                    </a>
+                                </div>
+
+                                <% }); %>
+
+                            </div>
+                        </div>
+                        
+                        <ul class="pagination home-product__pagination">
+                            <li class="pagination-item">
+                                <a href="" class="pagination-item__link">
+                                    <i class="pagination-item__icon fa-solid fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="pagination-item pagination-item-active">
+                                <a href="" class="pagination-item__link">1</a>
+                            </li>
+                            <li class="pagination-item">
+                                <a href="" class="pagination-item__link">2</a>
+                            </li>
+                            <li class="pagination-item">
+                                <a href="" class="pagination-item__link">
+                                    <i class="pagination-item__icon fa-solid fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="grid">
+                <div class="grid__row">
+                    <div class="grid__column-2-4">
+                        <h3 class="footer__heading">THÔNG TIN CHUNG</h3>
+                        <ul class="footer-list">
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Giới thiệu về Nam Fruit</a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Thông tin tuyển dụng </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Tin tức</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="grid__column-2-4">
+                        <h3 class="footer__heading">Chăm sóc khách hàng </h3>
+                        <ul class="footer-list">
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Trung tâm trợ giúp </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Thông tin khuyến mãi </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Gửi yêu cầu bảo hành </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Góp ý, khiếu nại  </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="grid__column-2-4">
+                        <h3 class="footer__heading">Hướng dẫn</h3>
+                        <ul class="footer-list">
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Hướng dẫn mua hàng online </a> 
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Hướng dẫn thanh toán từ Shop  </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Hướng dẫn mua hàng từ FB </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="grid__column-2-4">
+                        <h3 class="footer__heading">Theo dõi chúng tôi trên </h3>
+                        <ul class="footer-list">
+                            <li class="footer-item">
+                                <a href="https://www.facebook.com/profile.php?id=100056862950215&mibextid=ZbWKwL" target="blank" class="footer-item__link">
+                                    <i class="footer-item__icon fa-brands fa-facebook"></i>
+                                    Facebook </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="grid__column-2-4">
+                        <h3 class="footer__heading">Chính sách</h3>
+                        <ul class="footer-list">
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Cam kết giá tốt </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Miễn phí vận chuyển </a>
+                            </li>
+                            <li class="footer-item">
+                                <a href="" class="footer-item__link">Thanh toán khi nhận hàng </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>  
+            <div class="footer__bottom">
+                <div class="grid">
+                    <p class="footer__text">Địa chỉ: Thôn An Thái, xã An Vỹ, huyện Khoái châu, tỉnh Hưng Yên </p>
+                    <p class="footer__text">© 2025 - Bản quyền thuộc về Shop Nam Fruit  </p>
+                </div>
+            </div>  
+        </footer>
+    </div>
+</body>
+</html>

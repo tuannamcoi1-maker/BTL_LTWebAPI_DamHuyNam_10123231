@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    </head>
+<body>
+    <div> 
+        <img src="/img/ruou-hoa-qua-trai-cay-1200x675.jpg" class="khung"> 
+    </div>
+    <div class="modal">
+        <div class="modal__overlay"></div>
+        <div class="modal__body">
+            <div class="auth-form">
+                <div class="auth-form__container">
+                    <div class="auth-form__header">
+                        <h3 class="auth-form__heading">Đăng Ký</h3>
+                        <a href="/dang-nhap" class="auth-form__switch-btn">Đăng Nhập</a>
+                    </div>
+                    
+                    <div class="auth-form__form">
+                        <div class="auth-form__group">
+                            <input type="text" id="tenkh" class="auth-form__input" placeholder="Nhập tên của bạn">
+                        </div>
+                        <div class="auth-form__group">
+                            <input type="text" id="sdtkh" class="auth-form__input" placeholder="Nhập số điện thoại của bạn">
+                        </div>
+                        <div class="auth-form__group">
+                            <input type="text" id="emailkh" class="auth-form__input" placeholder="Nhập email của bạn">
+                        </div>
+                        <div class="auth-form__group">
+                            <input type="text" id="diachikh" class="auth-form__input" placeholder="Nhập địa chỉ của bạn">
+                        </div>
+                        <div class="auth-form__group">
+                            <input type="password" id="mkkh" class="auth-form__input" placeholder="Nhập mật khẩu của bạn">
+                        </div>
+                        <div class="auth-form__group">
+                            <input type="password" id="mkkh1" class="auth-form__input" placeholder="Nhập lại mật khẩu của bạn">
+                        </div>
+                    </div>
+
+                    <div class="auth-form__aside">
+                        <p class="auth-form__policy-text">
+                            Bằng việc đăng kí, bạn đã đồng ý với NAM FRUIT về
+                            <a href="" class="auth-form__text-link">Điều khoản dịch vụ</a> &
+                            <a href="" class="auth-form__text-link">Chính sách bảo mật</a>
+                        </p>
+                    </div>
+
+                    <div class="auth-form__controls">
+                        <a href="/trang-chu" class="btn auth-form__controls-back">TRỞ LẠI</a>
+                        <button onclick="xuLyDangKy()" class="btn btn--primary">ĐĂNG KÍ</button>
+                    </div>
+                </div>
+                
+                <div class="auth-form__socials">
+                    <a href="" class="auth-form__socials--facebook btn btn--size-s btn--with-icon">
+                        <i class="auth-form__socials-icon fa-brands fa-square-facebook"></i>
+                        <span class="auth-form__socials-title">Kết nối với Facebook</span>
+                    </a>
+                    <a href="" class="auth-form__socials---google btn btn--size-s btn--with-icon">
+                        <i class="auth-form__socials-icon-google fa-brands fa-google"></i>
+                        <span class="auth-form__socials-title">Kết nối với Google</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function xuLyDangKy() {
+            // 1. Lấy dữ liệu từ các ô input
+            var hoTen = $('#tenkh').val().trim();
+            var sdt = $('#sdtkh').val().trim();
+            var email = $('#emailkh').val().trim();
+            var diaChi = $('#diachikh').val().trim();
+            var matKhau = $('#mkkh').val().trim();
+            var nhapLaiMatKhau = $('#mkkh1').val().trim();
+
+            // 2. Kiểm tra dữ liệu đầu vào (Validate)
+            if (!hoTen || !sdt || !email || !diaChi || !matKhau) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+            if (matKhau !== nhapLaiMatKhau) {
+                alert("Mật khẩu nhập lại không khớp!");
+                return;
+            }
+
+            // 3. Gửi dữ liệu sang API Backend (/api/dang-ky)
+            fetch('/api/dang-ky', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ho_ten: hoTen,
+                    so_dien_thoai: sdt,
+                    email: email,
+                    dia_chi: diaChi,
+                    mat_khau: matKhau
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+                    window.location.href = "/dang-nhap"; // Chuyển hướng sang trang đăng nhập
+                } else {
+                    alert("Đăng ký thất bại: " + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi:', error);
+                alert("Có lỗi xảy ra khi kết nối tới server.");
+            });
+        }
+    </script>
+</body>
+</html>

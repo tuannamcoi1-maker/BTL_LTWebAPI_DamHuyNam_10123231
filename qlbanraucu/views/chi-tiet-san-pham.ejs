@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.ten_san_pham %></title>
+    <link rel="stylesheet" href="/css/sanpham.css">
+    <link rel="stylesheet" href="/css/btlon.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+
+    <style>
+        /* CSS cho menu User */
+        .header__navbar-user { position: relative; }
+        .header__navbar-user-img { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+        .header__navbar-user-name { margin-left: 4px; font-size: 1.4rem; font-weight: 400; }
+        .header__navbar-user-menu {
+            position: absolute; z-index: 2; padding-left: 0; top: 100%; right: 0;
+            background-color: white; border-radius: 2px; width: 160px; list-style: none;
+            box-shadow: 0 1px 2px #e0e0e0; display: none; 
+        }
+        .header__navbar-user:hover .header__navbar-user-menu { display: block; }
+        .header__navbar-user-item a, .header__navbar-user-item button {
+            text-decoration: none; color: #333; font-size: 1.4rem; padding: 8px 16px; display: block; width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+        }
+        .header__navbar-user-item a:hover, .header__navbar-user-item button:hover { background-color: #fafafa; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="grid">
+                <nav class="header__navbar">
+                    <ul class="header__navbar-list">
+                        <li class="header__navbar-item">
+                            Kết nối <a href="#" class="header__navbar-icon-link"><i class="header__navbar-icon fa-brands fa-facebook"></i></a>
+                        </li>
+                    </ul>
+                    <ul class="header__navbar-list">
+                        <span id="boxrighttop" class="kh-login">
+                            <li class="header__navbar-item"><a href="/dang-ky" class="header__navbar-item-link header__navbar-item--separate">Đăng Ký</a></li>
+                            <li class="header__navbar-item"><a href="/dang-nhap" class="header__navbar-item-link">Đăng Nhập</a></li>
+                        </span>
+
+                        <span id="boxrighttopKH" style="display: none;" class="dntc">
+                            <li class="header__navbar-item header__navbar-user">
+                                <span id="i" class="tk" style="display: flex; align-items: center; cursor: pointer;">
+                                    <img src="/img/lovepik-avatar-png-image_401175186_wh1200.png" alt="" class="header__navbar-user-img">
+                                    <span id="tenkhachhang" class="header__navbar-user-name">User</span> 
+                                </span>
+                                <ul class="header__navbar-user-menu">
+                                    <li class="header__navbar-user-item"><a href="#">Tài khoản của tôi</a></li>
+                                    <li class="header__navbar-user-item header__navbar-user-item--separate">
+                                        <button onclick="logout()">Đăng xuất</button>
+                                    </li>
+                                </ul>
+                            </li>
+                        </span>
+                    </ul>
+                </nav>
+
+                <div class="header-with-search">
+                    <div class="header__logo">
+                        <a href="/trang-chu" class="header__logo-link">
+                            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="header__logo-img">
+                        </a>
+                    </div>
+                    
+                    <div class="header__cart">
+                       <div class="header__cart-wrap">
+                            <a href="/gio-hang"><i class="header__cart-icon fa-solid fa-cart-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header> 
+
+        <div class="app__container">
+            <div class="grid">
+                <div class="lk">
+                    <a href="/trang-chu" class="lk__tc">Trang chủ</a>
+                    <span class="lk__tensp"> / <%= product.ten_san_pham %></span>
+                </div>
+
+                <div class="app">
+                    <section class="app__sp-tt">
+                        <div class="row">
+                            <img src="/img/<%= product.anh_dai_dien %>" class="row-img-sp">
+                        </div>  
+                        <div class="content">
+                            <div class="name"><%= product.ten_san_pham %></div>
+                            <div class="star">
+                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 
+                            </div>
+                            <div class="price">
+                                <% if(product.gia_goc > product.gia_ban) { %>
+                                    <span class="price__up"><%= product.gia_goc.toLocaleString() %>₫</span>
+                                <% } %>
+                                <span class="price__down"><%= product.gia_ban.toLocaleString() %>₫</span>
+                            </div>
+                            
+                            <button type="button" class="cart-add" onclick="themVaoGioHang()">
+                                <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                            </button>
+
+                            <div class="gift">
+                                <div class="title"><i class="fas fa-gift"></i> QUÀ TẶNG / KHUYẾN MẠI</div>
+                                <div class="content">
+                                    <li>Miễn phí Ship cho đơn hàng từ 1.000.000đ</li>
+                                    <li>Hỗ trợ đổi trả nhanh chóng</li>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content" id="r">
+                            <div class="nd"><div class="title">CAM KẾT BÁN HÀNG</div><div class="content"><li>Sản phẩm 100% chính hãng</li></div></div>
+                        </div>
+                    </section>
+                    
+                    <section class="describe">
+                        <div class="title1">Giới thiệu sản phẩm:</div>
+                        <p style="margin-top: 10px;">   
+                            <%= product.mo_ta %>
+                        </p>
+                        <p style="margin-top: 10px;">Xuất xứ: <strong><%= product.nguon_goc %></strong></p>
+                    </section>
+
+                    <section class="sptt">
+                        <div class="product_title">
+                            <span ><b class="product_title-b">SẢN PHẨM TƯƠNG TỰ</b></span>
+                        </div>
+                        <div class="grid__column-10">
+                            <div class="home-product">
+                                <div class="grid__row"> 
+                                    <% relatedProducts.forEach(function(item) { %>
+                                    <div class="grid__column-2-4">
+                                        <a href="/chi-tiet-san-pham/<%= item.ma_san_pham %>" class="home-product-item">
+                                            <div class="home-product-item__img" style="background-image: url('/img/<%= item.anh_dai_dien %>');"></div>
+                                            <h4 class="home-product-item__name"><%= item.ten_san_pham %></h4>
+                                            <div class="home-product-item__price">
+                                                <span class="home-product-item__price-current"><%= item.gia_ban.toLocaleString() %>đ</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div> 
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="grid">
+               <p style="text-align:center; padding: 20px;">© 2025 - Shop Nam Fruit</p>
+            </div>  
+        </footer>
+    </div>
+
+    <script>
+        // 1. Kiểm tra trạng thái đăng nhập khi tải trang
+        $(document).ready(function() {
+            var userStr = localStorage.getItem("currentUser");
+            if (userStr) {
+                // Đã đăng nhập: Hiện Avatar, Ẩn Đăng ký/Đăng nhập
+                var user = JSON.parse(userStr);
+                $('#tenkhachhang').text(user.ho_ten);
+                $('#boxrighttop').hide();
+                $('#boxrighttopKH').show();
+            } else {
+                // Chưa đăng nhập: Hiện Đăng ký/Đăng nhập
+                $('#boxrighttop').show();
+                $('#boxrighttopKH').hide();
+            }
+        });
+
+        // 2. Hàm Đăng xuất
+        function logout() {
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("username");
+            window.location.reload(); // Tải lại trang để cập nhật Header
+        }
+
+        // 3. Hàm Thêm vào giỏ hàng (QUAN TRỌNG: Kiểm tra đăng nhập tại đây)
+        function themVaoGioHang() {
+            var userStr = localStorage.getItem("currentUser");
+            
+            // Nếu chưa đăng nhập -> Chuyển hướng sang trang đăng nhập
+            if (!userStr) {
+                if(confirm("Bạn cần đăng nhập để mua hàng. Chuyển đến trang đăng nhập ngay?")) {
+                    window.location.href = "/dang-nhap";
+                }
+                return;
+            }
+
+            var user = JSON.parse(userStr);
+
+            // Nếu đã đăng nhập -> Gọi API thêm vào giỏ
+            fetch('/api/gio-hang/them', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ma_nguoi_dung: user.ma_nguoi_dung,
+                    ma_san_pham: '<%= product.ma_san_pham %>',
+                    so_luong: 1
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("✅ Đã thêm sản phẩm vào giỏ hàng!");
+                } else {
+                    alert("❌ Lỗi khi thêm vào giỏ.");
+                }
+            })
+            .catch(err => console.error(err));
+        }
+    </script>
+</body>
+</html>
