@@ -1,0 +1,96 @@
+/* --- BIẾN MÀU SẮC (Đồng bộ với Admin) --- */
+:root {
+    --primary-green: #82b53f; /* Màu xanh thương hiệu */
+    --dark-green: #6a9630;
+    --text-color: #333;
+    --bg-gray: #f9f9f9;
+}
+
+body { font-family: 'Arial', sans-serif; display: flex; margin: 0; background-color: var(--bg-gray); }
+
+/* --- SIDEBAR (Giống Admin) --- */
+.sidebar { 
+    width: 250px; 
+    background: var(--primary-green); 
+    color: white; 
+    min-height: 100vh; 
+    padding: 20px; 
+    box-sizing: border-box; 
+    position: fixed; /* Cố định sidebar */
+}
+
+.logo-admin {
+    width: 100%;
+    margin-bottom: 20px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.sidebar h2 { 
+    text-align: center; 
+    font-size: 16px; 
+    margin-bottom: 30px; 
+    text-transform: uppercase; 
+    border-bottom: 1px solid rgba(255,255,255,0.3); 
+    padding-bottom: 10px;
+}
+
+.menu-item { 
+    display: block; 
+    padding: 12px; 
+    color: white; 
+    text-decoration: none; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    margin-bottom: 5px; 
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.menu-item:hover, .menu-item.active { background: var(--dark-green); }
+
+/* --- CONTENT --- */
+.content { 
+    flex: 1; 
+    padding: 30px; 
+    margin-left: 250px; /* Né sidebar ra */
+    background: var(--bg-gray); 
+}
+
+/* --- TABLE (Đồng bộ) --- */
+.table-container { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+}
+
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: left; }
+th { background-color: var(--primary-green); color: white; text-transform: uppercase; font-size: 14px; }
+tr:hover { background-color: #f1f1f1; }
+
+/* --- STATUS BADGES --- */
+.status { padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; display: inline-block; }
+.cho_xac_nhan { background: #ffeeba; color: #856404; }
+.da_xac_nhan { background: #d4edda; color: #155724; }
+.da_thanh_toan { background: #c3e6cb; color: #0f5132; border: 1px solid #198754; }
+.huy { background: #f8d7da; color: #721c24; }
+
+/* --- BUTTONS --- */
+.btn-action { margin-right: 5px; padding: 6px 12px; cursor: pointer; border: none; border-radius: 4px; color: white; font-weight: bold; transition: 0.2s;}
+.btn-action:hover { opacity: 0.8; }
+.btn-view { background: #17a2b8; }
+.btn-confirm { background: var(--primary-green); }
+.btn-pay { background: #0d6efd; }
+.btn-cancel { background: #dc3545; }
+
+/* --- MODAL --- */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+.modal-content { background-color: white; margin: 5% auto; padding: 25px; width: 60%; border-radius: 8px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
+.close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; color: #aaa; }
+.close:hover { color: black; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }

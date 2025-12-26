@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Trị Nam Fruit</title>
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="sidebar">
+        <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Nam Fruit Logo">
+        
+        <h2>QUẢN TRỊ VIÊN</h2>
+        
+        <a class="menu-item active" onclick="openTab('tab-sanpham')">
+            <i class="fas fa-box"></i> Quản lý Sản phẩm
+        </a>
+        <a class="menu-item" onclick="openTab('tab-nguoidung')">
+            <i class="fas fa-users"></i> Quản lý Người dùng
+        </a>
+        <a class="menu-item" onclick="openTab('tab-danhmuc')">
+            <i class="fas fa-list"></i> Quản lý Danh mục
+        </a>
+        <a class="menu-item" onclick="openTab('tab-khuyenmai')">
+            <i class="fas fa-tags"></i> Quản lý Khuyến mãi
+        </a>
+        
+        <hr style="border-color: rgba(255,255,255,0.2);">
+        
+        <a href="/dang-xuat" class="menu-item">
+            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+        </a>
+    </div>
+
+    <div class="content">
+        
+        <div id="tab-sanpham" class="tab-content active">
+            <h1 style="color: #82b53f;">Danh Sách Sản Phẩm</h1>
+            <button class="btn btn-add" onclick="toggleForm('form-sp')">+ Thêm Sản phẩm Mới</button>
+            
+            <div id="form-sp" class="box-add">
+                <form action="/admin/san-pham/them" method="POST">
+                    <div class="form-group">
+                        <label>Tên Sản phẩm:</label>
+                        <input type="text" name="ten_san_pham" class="form-control" required placeholder="Nhập tên sản phẩm...">
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; gap: 20px;">
+                        <div style="flex: 1;">
+                            <label>Giá gốc (vnđ):</label>
+                            <input type="number" name="gia_goc" class="form-control" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Giá bán (vnđ):</label>
+                            <input type="number" name="gia_ban" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Hình ảnh (Tên file trong thư mục public/img):</label>
+                        <input type="text" name="anh_dai_dien" class="form-control" placeholder="Ví dụ: tao-my.jpg">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mô tả chi tiết:</label>
+                        <textarea name="mo_ta" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Danh mục:</label>
+                        <select name="ma_danh_muc" class="form-control">
+                            <% categories.forEach(cat => { %>
+                                <option value="<%= cat.ma_danh_muc %>"><%= cat.ten_danh_muc %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nguồn gốc / Xuất xứ:</label>
+                        <input type="text" name="nguon_goc" class="form-control" placeholder="Ví dụ: Việt Nam, Mỹ, Úc...">
+                    </div>
+
+                    <button type="submit" class="btn btn-add">Lưu Sản Phẩm</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá bán</th>
+                        <th>Nguồn gốc</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(products && products.length > 0) { %>
+                        <% products.forEach(p => { %>
+                        <tr>
+                            <td><%= p.ma_san_pham %></td>
+                            <td><img src="/img/<%= p.anh_dai_dien %>" width="50" style="border-radius: 4px;"></td>
+                            <td style="font-weight: bold;"><%= p.ten_san_pham %></td>
+                            <td style="color: red;"><%= p.gia_ban.toLocaleString() %>đ</td>
+                            <td><%= p.nguon_goc %></td>
+                            <td>
+                                <a href="/admin/san-pham/xoa/<%= p.ma_san_pham %>" class="btn btn-del" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="6" style="text-align: center;">Chưa có sản phẩm nào.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tab-nguoidung" class="tab-content">
+            <h1 style="color: #82b53f;">Quản Lý Người Dùng</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ và Tên</th>
+                        <th>Email (Tài khoản)</th>
+                        <th>Số điện thoại</th>
+                        <th>Vai trò</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(users && users.length > 0) { %>
+                        <% users.forEach(u => { %>
+                        <tr>
+                            <td><%= u.ma_nguoi_dung %></td>
+                            <td><%= u.ho_ten %></td>
+                            <td><%= u.email %></td>
+                            <td><%= u.so_dien_thoai %></td>
+                            <td>
+                                <% if(u.vai_tro == 'admin') { %> <span style="color: red; font-weight: bold;">Admin</span> <% } %>
+                                <% if(u.vai_tro == 'nhan_vien') { %> <span style="color: blue; font-weight: bold;">Nhân viên</span> <% } %>
+                                <% if(u.vai_tro == 'khach_hang') { %> Khách hàng <% } %>
+                            </td>
+                            <td>
+                                <% if(u.vai_tro !== 'admin') { %>
+                                    <a href="/admin/nguoi-dung/xoa/<%= u.ma_nguoi_dung %>" class="btn btn-del" onclick="return confirm('Xóa người dùng này sẽ xóa cả lịch sử mua hàng của họ. Tiếp tục?')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </a>
+                                <% } else { %>
+                                    <span style="color: #ccc;">Khóa</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tab-danhmuc" class="tab-content">
+            <h1 style="color: #82b53f;">Quản Lý Danh Mục</h1>
+            <button class="btn btn-add" onclick="toggleForm('form-dm')">+ Thêm Danh Mục</button>
+            
+            <div id="form-dm" class="box-add">
+                <form action="/admin/danh-muc/them" method="POST">
+                    <div class="form-group">
+                        <label>Tên Danh Mục:</label>
+                        <input type="text" name="ten_danh_muc" class="form-control" required placeholder="Ví dụ: Rau củ, Trái cây...">
+                    </div>
+                    <button type="submit" class="btn btn-add">Lưu Danh Mục</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Danh Mục</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(categories && categories.length > 0) { %>
+                        <% categories.forEach(c => { %>
+                        <tr>
+                            <td><%= c.ma_danh_muc %></td>
+                            <td><%= c.ten_danh_muc %></td>
+                            <td>
+                                <a href="/admin/danh-muc/xoa/<%= c.ma_danh_muc %>" class="btn btn-del" onclick="return confirm('Cảnh báo: Xóa danh mục này có thể ảnh hưởng đến các sản phẩm thuộc về nó!')">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tab-khuyenmai" class="tab-content">
+            <h1 style="color: #82b53f;">Mã Giảm Giá & Khuyến Mãi</h1>
+            <button class="btn btn-add" onclick="toggleForm('form-km')">+ Thêm Mã KM</button>
+            
+            <div id="form-km" class="box-add">
+                <form action="/admin/khuyen-mai/them" method="POST">
+                    <div class="form-group">
+                        <label>Mã Code (Viết liền, không dấu):</label>
+                        <input type="text" name="ma_code" class="form-control" placeholder="VD: TET2025" required>
+                    </div>
+                    
+                    <div class="form-group" style="display: flex; gap: 20px;">
+                        <div style="flex: 1;">
+                            <label>% Giảm:</label>
+                            <input type="number" name="phan_tram_giam" class="form-control" value="0">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Hoặc Tiền Giảm (VNĐ):</label>
+                            <input type="number" name="so_tien_giam" class="form-control" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="display: flex; gap: 20px;">
+                        <div style="flex: 1;">
+                            <label>Ngày bắt đầu:</label>
+                            <input type="date" name="ngay_bat_dau" class="form-control">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Ngày kết thúc:</label>
+                            <input type="date" name="ngay_ket_thuc" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-add">Lưu Khuyến Mãi</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã Code</th>
+                        <th>Mức giảm</th>
+                        <th>Thời hạn</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(promotions && promotions.length > 0) { %>
+                        <% promotions.forEach(km => { %>
+                        <tr>
+                            <td style="font-weight: bold; color: green;"><%= km.ma_code %></td>
+                            <td>
+                                <% if(km.phan_tram_giam > 0) { %> Giảm <%= km.phan_tram_giam %>% <% } %>
+                                <% if(km.so_tien_giam > 0) { %> (-<%= km.so_tien_giam.toLocaleString() %>đ) <% } %>
+                            </td>
+                            <td>
+                                <%= km.ngay_bat_dau ? new Date(km.ngay_bat_dau).toLocaleDateString() : '...' %> 
+                                đến 
+                                <%= km.ngay_ket_thuc ? new Date(km.ngay_ket_thuc).toLocaleDateString() : '...' %>
+                            </td>
+                            <td>
+                                <% if(km.trang_thai == 1) { %> <span style="color: green;">Đang chạy</span> <% } else { %> <span style="color: red;">Dừng</span> <% } %>
+                            </td>
+                            <td>
+                                <a href="/admin/khuyen-mai/xoa/<%= km.ma_khuyen_mai %>" class="btn btn-del" onclick="return confirm('Xóa mã này?')">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" style="text-align: center;">Chưa có mã khuyến mãi nào.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

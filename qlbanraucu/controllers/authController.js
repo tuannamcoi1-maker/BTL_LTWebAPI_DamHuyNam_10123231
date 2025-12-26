@@ -1,52 +1,43 @@
-const User = require('../models/userModel');
-const bcrypt = require('bcryptjs'); // Dùng để mã hóa mật khẩu
+// CHÚ Ý DÒNG NÀY: Phải viết hoa chữ U nếu file model của bạn tên là "UserModel.js"
+const UserModel = require('../models/userModel'); 
 
-exports.register = (req, res) => {
-    const { ho_ten, email, so_dien_thoai, dia_chi, mat_khau } = req.body;
+module.exports = {
+    loginPage: (req, res) => res.render('dang-nhap'),
+    registerPage: (req, res) => res.render('dang-ky'),
 
-    // 1. Kiểm tra xem email đã tồn tại chưa
-    User.findByEmail(email, (err, user) => {
-        if (user) {
-            return res.json({ success: false, message: "Email đã tồn tại!" });
-        }
-
-        // 2. Mã hóa mật khẩu trước khi lưu (Bảo mật)
-        // Lưu ý: Nếu muốn đơn giản để test có thể bỏ qua bước hash này, nhưng làm BTL nên có.
-        const hashedPassword = bcrypt.hashSync(mat_khau, 10); 
-
-        const newUser = { ho_ten, email, so_dien_thoai, dia_chi, mat_khau: hashedPassword };
-
-        // 3. Lưu vào DB
-        User.create(newUser, (err, result) => {
-            if (err) return res.status(500).json({ success: false, message: "Lỗi Server" });
-            res.json({ success: true, message: "Đăng ký thành công!" });
+    // API Đăng ký
+    register: (req, res) => {
+        UserModel.create(req.body, (err) => {
+            if(err) res.json({ success: false, message: "Email có thể đã tồn tại" });
+            else res.json({ success: true });
         });
-    });
-};
+    },
 
-exports.login = (req, res) => {
-    const { email, mat_khau } = req.body;
+    // API Đăng nhập
+    login: (req, res) => {
+        UserModel.findByEmailAndPassword(req.body.email, req.body.mat_khau, (err, results) => {
+            if (results && results.length > 0) {
+                const user = results[0];
+                
+                // 1. Lưu session (Sẽ hoạt động TỐT nhờ app.js đã cấu hình đúng)
+                req.session.user = user;
 
-    User.findByEmail(email, (err, user) => {
-        if (!user) {
-            return res.json({ success: false, message: "Email không tồn tại!" });
-        }
+                // 2. Kiểm tra vai trò để điều hướng
+                let redirectUrl = '/trang-chu';
+                if (user.vai_tro === 'admin') redirectUrl = '/admin/dashboard';
+                else if (user.vai_tro === 'nhan_vien') redirectUrl = '/staff/orders';
 
-        // So sánh mật khẩu (user.mat_khau là hash trong DB)
-        // Nếu lúc đăng ký bạn không hash thì dùng: if (mat_khau !== user.mat_khau)
-        if (!bcrypt.compareSync(mat_khau, user.mat_khau)) {
-            return res.json({ success: false, message: "Sai mật khẩu!" });
-        }
-
-        // Đăng nhập thành công -> Trả về thông tin User + Vai trò
-        res.json({
-            success: true,
-            message: "Đăng nhập thành công",
-            user: {
-                ma_nguoi_dung: user.ma_nguoi_dung,
-                ho_ten: user.ho_ten,
-                vai_tro: user.vai_tro // Quan trọng: Trả về vai trò để Frontend biết
+                // 3. Trả về client để JS (auth.js) tự chuyển trang
+                res.json({ success: true, user: user, redirectUrl: redirectUrl });
+            } else {
+                res.json({ success: false, message: "Sai email hoặc mật khẩu" });
             }
         });
-    });
+    },
+
+    // Đăng xuất
+    logout: (req, res) => {
+        req.session.destroy(); // Xóa session trong bộ nhớ server
+        res.redirect('/dang-nhap');
+    }
 };

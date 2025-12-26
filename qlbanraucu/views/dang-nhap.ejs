@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <title>Đăng Nhập</title>
     <script src="/js/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="/css/login.css"> <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="/css/login.css"> 
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
 </head>
 <body>
-    <div> 
-        <img src="/img/ruou-hoa-qua-trai-cay-1200x675.jpg" class="khung"> 
-    </div>
+    <div><img src="/img/ruou-hoa-qua-trai-cay-1200x675.jpg" class="khung"></div>
     <div class="modal">
         <div class="modal__body">
             <div class="auth-form">
@@ -17,15 +16,13 @@
                     <h3 class="auth-form__heading">Đăng Nhập</h3>
                     <a href="/dang-ky" class="auth-form__switch-btn">Đăng Kí</a>
                 </div>
-                
-                <form id="loginKH">
+                <form id="loginKH" onsubmit="xuLyDangNhap(event)">
                     <div class="auth-form__group">
                         <input type="text" id="tk" class="auth-form__input" placeholder="Nhập Email của bạn">
                     </div>
                     <div class="auth-form__group">
                         <input type="password" id="mk" class="auth-form__input" placeholder="Mật khẩu">
                     </div>
-
                     <div class="auth-form__controls">
                         <a href="/trang-chu" class="btn auth-form__controls-back">TRỞ LẠI</a>
                         <button type="submit" class="btn btn--primary">ĐĂNG NHẬP</button>
@@ -34,37 +31,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $("#loginKH").submit(function (event) {
-            event.preventDefault();
-            var emailInput = $('#tk').val().trim();
-            var matkhauInput = $('#mk').val().trim();
-
-            if(emailInput === "" || matkhauInput === "") {
-                alert("Vui lòng nhập đầy đủ thông tin!");
-                return;
-            }
-
-            // Gọi API Backend
-            fetch('/api/dang-nhap', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: emailInput, mat_khau: matkhauInput })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Đăng nhập thành công!");
-                    localStorage.setItem("username", data.user.ho_ten);
-                    localStorage.setItem("currentUser", JSON.stringify(data.user));
-                    window.location.href = "/trang-chu"; // Chuyển về trang chủ
-                } else {
-                    alert("Lỗi: " + data.message);
-                }
-            })
-            .catch(err => alert("Lỗi kết nối server"));
-        });
-    </script>
+    <script src="/js/auth.js"></script>
 </body>
 </html>
