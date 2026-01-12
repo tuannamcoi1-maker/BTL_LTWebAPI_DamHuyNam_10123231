@@ -1,9 +1,8 @@
 const db = require('../config/db');
 
 module.exports = {
-    // ===================================================
-    // 1. QUẢN LÝ SẢN PHẨM (San Pham)
-    // ===================================================
+    // 1. SẢN PHẨM
+    // data body phải có: ma_danh_muc, ten_san_pham, gia_ban, gia_goc, ...
     addProduct: (data, cb) => {
         db.query("INSERT INTO san_pham SET ?", data, cb);
     },
@@ -14,27 +13,15 @@ module.exports = {
         db.query("DELETE FROM san_pham WHERE ma_san_pham = ?", [id], cb);
     },
 
-    // ===================================================
-    // 2. QUẢN LÝ NGƯỜI DÙNG (Nguoi Dung)
-    // ===================================================
+    // 2. NGƯỜI DÙNG
     getAllUsers: (cb) => {
-        db.query("SELECT * FROM nguoi_dung", cb);
-    },
-    // Admin thêm người dùng (nếu cần)
-    addUser: (data, cb) => {
-        db.query("INSERT INTO nguoi_dung SET ?", data, cb);
-    },
-    // Sửa thông tin người dùng
-    updateUser: (id, data, cb) => {
-        db.query("UPDATE nguoi_dung SET ? WHERE ma_nguoi_dung = ?", [data, id], cb);
+        db.query("SELECT ma_nguoi_dung, ho_ten, email, so_dien_thoai, vai_tro, trang_thai FROM nguoi_dung", cb);
     },
     deleteUser: (id, cb) => {
         db.query("DELETE FROM nguoi_dung WHERE ma_nguoi_dung = ?", [id], cb);
     },
 
-    // ===================================================
-    // 3. QUẢN LÝ DANH MỤC (Danh Muc)
-    // ===================================================
+    // 3. DANH MỤC
     getAllCategories: (cb) => {
         db.query("SELECT * FROM danh_muc", cb);
     },
@@ -45,13 +32,10 @@ module.exports = {
         db.query("UPDATE danh_muc SET ? WHERE ma_danh_muc = ?", [data, id], cb);
     },
     deleteCategory: (id, cb) => {
-        // Lưu ý: Thường phải xóa sản phẩm thuộc danh mục trước hoặc set null
         db.query("DELETE FROM danh_muc WHERE ma_danh_muc = ?", [id], cb);
     },
 
-    // ===================================================
-    // 4. QUẢN LÝ KHUYẾN MÃI (Khuyen Mai)
-    // ===================================================
+    // 4. KHUYẾN MÃI
     getAllPromotions: (cb) => {
         db.query("SELECT * FROM khuyen_mai", cb);
     },
@@ -63,5 +47,24 @@ module.exports = {
     },
     deletePromotion: (id, cb) => {
         db.query("DELETE FROM khuyen_mai WHERE ma_khuyen_mai = ?", [id], cb);
+    },
+
+    // 5. THỐNG KÊ (Updated for Schema)
+    getRevenueStats: (cb) => {
+        // Lấy các đơn hàng đã thanh toán (da_thanh_toan)
+        const sql = `
+            SELECT 
+                hd.ma_hoa_don, hd.ngay_dat_hang, hd.tong_tien, hd.trang_thai,
+                nd.ho_ten, nd.email,
+                sp.ten_san_pham,
+                ct.so_luong, ct.don_gia_luc_mua
+            FROM hoa_don hd
+            JOIN nguoi_dung nd ON hd.ma_nguoi_dung = nd.ma_nguoi_dung
+            JOIN chi_tiet_hoa_don ct ON hd.ma_hoa_don = ct.ma_hoa_don
+            JOIN san_pham sp ON ct.ma_san_pham = sp.ma_san_pham
+            WHERE hd.trang_thai = 'da_thanh_toan'
+            ORDER BY hd.ngay_dat_hang DESC
+        `;
+        db.query(sql, cb);
     }
 };

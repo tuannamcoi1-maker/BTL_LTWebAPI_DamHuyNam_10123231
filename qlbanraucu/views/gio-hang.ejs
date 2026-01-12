@@ -4,14 +4,10 @@
     <meta charset="UTF-8">
     <title>Giỏ hàng của bạn</title>
     <link rel="stylesheet" href="/css/btlon.css">
-    <link rel="stylesheet" href="/css/giohang.css">
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/giohang.css">
     <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
-    <script src="/js/jquery-3.6.0.min.js"></script>
-    <style>
-        .header__navbar-user-menu { display: none; position: absolute; z-index: 1; top: 100%; right: 0; background-color: white; width: 160px; box-shadow: 0 1px 2px #e0e0e0; }
-        .header__navbar-user:hover .header__navbar-user-menu { display: block; }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="app">
@@ -19,16 +15,22 @@
             <div class="grid">
                 <nav class="header__navbar">
                     <ul class="header__navbar-list">
-                        <li class="header__navbar-item">Kết nối <a href="#" class="header__navbar-icon-link"><i class="header__navbar-icon fa-brands fa-facebook"></i></a></li>
+                        <li class="header__navbar-item">
+                            Kết nối <a href="#" class="header__navbar-icon-link"><i class="header__navbar-icon fa-brands fa-facebook"></i></a>
+                        </li>
                     </ul>
                     <ul class="header__navbar-list">
                         <span id="boxrighttop" class="kh-login">
                             <li class="header__navbar-item"><a href="/dang-ky" class="header__navbar-item-link header__navbar-item--separate">Đăng Ký</a></li>
                             <li class="header__navbar-item"><a href="/dang-nhap" class="header__navbar-item-link">Đăng Nhập</a></li>
                         </span>
+                        
                         <span id="boxrighttopKH" style="display: none;" class="dntc">
                             <li class="header__navbar-item header__navbar-user">
-                                <span class="tk"><img src="/img/lovepik-avatar-png-image_401175186_wh1200.png" class="header__navbar-user-img"><span id="tenkhachhang" class="header__navbar-user-name">User</span></span>
+                                <span class="tk">
+                                    <img src="/img/lovepik-avatar-png-image_401175186_wh1200.png" class="header__navbar-user-img">
+                                    <span id="tenkhachhang" class="header__navbar-user-name">User</span>
+                                </span>
                                 <ul class="header__navbar-user-menu">
                                     <li class="header__navbar-user-item"><button onclick="logout()">Đăng xuất</button></li>
                                 </ul>
@@ -36,8 +38,30 @@
                         </span>
                     </ul>
                 </nav>
+
                 <div class="header-with-search">
-                    <div class="header__logo"><a href="/trang-chu" class="header__logo-link"><img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="header__logo-img"></a></div>
+                    <div class="header__logo">
+                        <a href="/trang-chu" class="header__logo-link">
+                            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="header__logo-img">
+                        </a>
+                    </div>
+
+                    <div class="header__search">
+                        <div class="header__search-input-wrap">
+                            <input type="text" class="header__search-input" placeholder="Tìm kiếm sản phẩm trong giỏ...">
+                        </div>
+                        <button class="header__search-btn">
+                            <i class="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+
+                    <div class="header__cart">
+                       <div class="header__cart-wrap">
+                            <a href="/gio-hang">
+                                <i class="header__cart-icon fa-solid fa-cart-plus"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -45,26 +69,63 @@
         <div class="app__container app__container-size">
             <div class="grid">
                 <div class="row">
-                    <div class="colf-9 colf-s-12 padding-table">
-                        <div class="title">Giỏ hàng của bạn</div>
+                    <div class="colf-9 padding-table">
+                        <div class="title">
+                            <i class="fa-solid fa-cart-shopping"></i> Giỏ hàng của bạn
+                        </div>
+                        
                         <table class="table-prod">
-                            <thead><tr><th>Ảnh</th><th>Tên sản phẩm</th><th>Giá</th><th>SL</th><th>Xóa</th></tr></thead>
-                            <tbody id="cartBody"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>Ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody">
+                                </tbody>
                         </table>
                     </div>
-                    <div class="colf-3 colf-s-12 right padding-table">
+
+                    <div class="colf-3 padding-table">
+                        
+                        <div class="coupon-section" style="margin-bottom: 15px; background: #fff; padding: 10px; border: 1px solid #eee; border-radius: 5px;">
+                            <div style="font-weight: bold; margin-bottom: 5px;">Mã khuyến mãi</div>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="couponCode" class="form-control" placeholder="Nhập mã code" style="flex:1;">
+                                <button onclick="applyCoupon()" style="background: #2ecc71; color: white; border: none; padding: 0 10px; border-radius: 4px; cursor: pointer;">Áp dụng</button>
+                            </div>
+                            <div id="couponMessage" style="font-size: 12px; margin-top: 5px;"></div>
+                        </div>
+
                         <table class="table-right">
-                            <tr><td colspan="2" class="title">TỔNG TIỀN</td></tr>
-                            <tr><td>Tổng cộng:</td><td class="price" id="totalPrice">0₫</td></tr>
+                            <tr><td colspan="2" class="title" style="border-left:none; font-size:16px;">ĐƠN HÀNG</td></tr>
+                            <tr>
+                                <td>Tạm tính:</td>
+                                <td class="price" id="tempPrice" style="font-size: 16px; color: #333;">0₫</td>
+                            </tr>
+                            <tr>
+                                <td>Giảm giá:</td>
+                                <td class="price" id="discountPrice" style="font-size: 16px; color: green;">-0₫</td>
+                            </tr>
+                            <tr style="border-top: 1px dashed #ddd;">
+                                <td style="font-weight: bold; padding-top: 10px;">Tổng cộng:</td>
+                                <td class="price" id="totalPrice" style="padding-top: 10px;">0₫</td>
+                            </tr>
                         </table>
+
                         <div class="payment-form">
-                            <h4>Thông tin thanh toán</h4>
+                            <h4><i class="fas fa-credit-card"></i> Thông tin thanh toán</h4>
                             <div class="form-group">
                                 <label>Chọn ngân hàng:</label>
                                 <select id="bankName" class="form-control">
                                     <option value="">-- Chọn ngân hàng --</option>
                                     <option value="Vietcombank">Vietcombank</option>
                                     <option value="MBBank">MB Bank</option>
+                                    <option value="Techcombank">Techcombank</option>
+                                    <option value="BIDV">BIDV</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -72,12 +133,17 @@
                                 <input type="text" id="bankAccount" class="form-control" placeholder="Nhập số tài khoản...">
                             </div>
                         </div>
-                        <div class="pay"><button onclick="thanhToan()" style="width:100%; padding:15px; background: #E34426; color:white; border:none; cursor:pointer;">THANH TOÁN NGAY</button></div>
+
+                        <div class="pay">
+                            <button onclick="thanhToan()">THANH TOÁN NGAY</button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+    
     <script src="/js/common.js"></script>
     <script src="/js/cart.js"></script>
 </body>

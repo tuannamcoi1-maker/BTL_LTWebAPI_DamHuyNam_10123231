@@ -9,8 +9,9 @@
 </head>
 <body>
     <div class="sidebar">
-        <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Logo">
-        
+        <a href="/trang-chu" title="Về trang chủ">
+            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Logo">
+        </a>
         <h2>NHÂN VIÊN BÁN HÀNG</h2>
         
         <a href="#" class="menu-item active">
@@ -53,9 +54,11 @@
                                 <span class="status <%= od.trang_thai.toLowerCase() %>">
                                     <% 
                                         let tt = od.trang_thai;
-                                        if(tt == 'Cho_xac_nhan') tt = 'Chờ xác nhận';
-                                        if(tt == 'Da_xac_nhan') tt = 'Đã xác nhận';
-                                        if(tt == 'Da_thanh_toan') tt = 'Đã thanh toán';
+                                        // [ĐÃ SỬA] So sánh với chữ thường để khớp Database
+                                        if(tt == 'cho_xac_nhan') tt = 'Chờ xác nhận';
+                                        if(tt == 'da_xac_nhan') tt = 'Đã xác nhận';
+                                        if(tt == 'da_thanh_toan') tt = 'Đã thanh toán';
+                                        if(tt == 'huy') tt = 'Đã hủy';
                                     %>
                                     <%= tt %>
                                 </span>
@@ -63,12 +66,12 @@
                             <td>
                                 <button class="btn-action btn-view" onclick="xemChiTiet('<%= od.ma_hoa_don %>')" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
                                 
-                                <% if(od.trang_thai == 'Cho_xac_nhan') { %>
+                                <% if(od.trang_thai == 'cho_xac_nhan') { %>
                                     <button class="btn-action btn-confirm" onclick="capNhatTrangThai('<%= od.ma_hoa_don %>', 'xac_nhan')" title="Xác nhận đơn"><i class="fas fa-check"></i></button>
                                     <button class="btn-action btn-cancel" onclick="capNhatTrangThai('<%= od.ma_hoa_don %>', 'huy')" title="Hủy đơn"><i class="fas fa-times"></i></button>
                                 <% } %>
 
-                                <% if(od.trang_thai == 'Da_xac_nhan') { %>
+                                <% if(od.trang_thai == 'da_xac_nhan') { %>
                                     <button class="btn-action btn-pay" onclick="capNhatTrangThai('<%= od.ma_hoa_don %>', 'thanh_toan')" title="Xác nhận đã thu tiền"><i class="fas fa-money-bill-wave"></i> Thu tiền</button>
                                 <% } %>
                             </td>
@@ -95,4 +98,4 @@
 
     <script src="/js/staff.js"></script>
 </body>
-</html>
+</html> 

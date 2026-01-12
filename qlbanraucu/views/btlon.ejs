@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <script src="/js/TaiKhoan.js"></script>
     <script src="/js/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -73,7 +72,7 @@
                                     <li class="header__navbar-user-item">
                                         <a href="">Tài khoản của tôi</a>
                                     </li>
-                                    <li   class="header__navbar-user-item header__navbar-user-item--separate">
+                                    <li class="header__navbar-user-item header__navbar-user-item--separate">
                                         <button class="dx" onclick="logout()"><span class="dx-1">Đăng xuất</span></button>
                                     </li>
                                 </ul>
@@ -103,7 +102,7 @@
                     <div class="header__cart">
                        <div class="header__cart-wrap">
                             <a href="/gio-hang">
-                            <i class="header__cart-icon fa-solid fa-cart-plus"></i></a>
+                                <i class="header__cart-icon fa-solid fa-cart-plus"></i></a>
                              </div>
                         </div>
                     </div>
@@ -127,13 +126,11 @@
 
                                 <% if(categories && categories.length > 0) { %>
                                     <% categories.forEach(function(cat) { %>
-                                        
                                         <li class="category-item <%= currentCat == cat.ma_danh_muc ? 'category-item--actice' : '' %>">
                                             <a href="/trang-chu?danhmuc=<%= cat.ma_danh_muc %>" class="category-item__link">
                                                 <%= cat.ten_danh_muc %>
                                             </a>
                                         </li>
-
                                     <% }); %>
                                 <% } %>
                             </ul>
@@ -146,25 +143,24 @@
                                 
                                 <% products.forEach(function(item) { %>
                                     
-                                    <% 
-                                        var phan_tram_giam = 0;
-                                        if (item.gia_goc && item.gia_goc > item.gia_ban) {
-                                            phan_tram_giam = Math.round(((item.gia_goc - item.gia_ban) / item.gia_goc) * 100);
-                                        }
-                                    %>
-
                                 <div class="grid__column-2-4"> 
                                     <a href="/chi-tiet-san-pham/<%= item.ma_san_pham %>" class="home-product-item">
                                         
                                         <div class="home-product-item__img" 
-                                             style="background-image: url('/img/<%= item.anh_dai_dien %>');">
+                                            style="background-image: url('/img/<%= item.anh_dai_dien %>');">
                                         </div>
                                         
                                         <h4 class="home-product-item__name"><%= item.ten_san_pham %></h4>
                                         
                                         <div class="home-product-item__price">
-                                            <span class="home-product-item__price-old"><%= item.gia_goc ? item.gia_goc.toLocaleString() : 0 %>đ</span>
-                                            <span class="home-product-item__price-current"><%= item.gia_ban.toLocaleString() %>đ</span>
+                                            <% if(item.khuyen_mai > 0) { %>
+                                                <span class="home-product-item__price-old">
+                                                    <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.gia_goc) %>
+                                                </span>
+                                            <% } %>
+                                            <span class="home-product-item__price-current">
+                                                <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.gia_ban) %>
+                                            </span>
                                         </div>
 
                                         <div class="home-product-item__action">
@@ -192,18 +188,18 @@
                                             <span>Yêu thích </span>
                                         </div>
                                         
-                                        <% if(phan_tram_giam > 0) { %>
-                                        <div class="home-product-item__sale-off">
-                                            <span class="home-product-item__sale-off-percent"><%= phan_tram_giam %>%</span>
-                                            <span class="home-product-item__sale-off-label">GIẢM</span>
-                                        </div>
+                                        <% if(item.khuyen_mai > 0) { %>
+                                            <div class="home-product-item__sale-off">
+                                                <span class="home-product-item__sale-off-percent"><%= item.khuyen_mai %>%</span>
+                                                <span class="home-product-item__sale-off-label">GIẢM</span>
+                                            </div>
                                         <% } %>
+
                                     </a>
                                 </div>
 
                                 <% }); %>
-
-                            </div>
+                                </div>
                         </div>
                         
                         <ul class="pagination home-product__pagination">
@@ -311,5 +307,6 @@
             </div>  
         </footer>
     </div>
+    <script src="/js/common.js"></script>
 </body>
 </html>

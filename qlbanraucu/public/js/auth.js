@@ -1,5 +1,5 @@
-// Xử lý Đăng Ký
 function xuLyDangKy() {
+    // ... logic lấy giá trị input giữ nguyên ...
     var hoTen = $('#tenkh').val().trim();
     var sdt = $('#sdtkh').val().trim();
     var email = $('#emailkh').val().trim();
@@ -16,7 +16,8 @@ function xuLyDangKy() {
         return;
     }
 
-    fetch('/api/dang-ky', {
+    // [CẬP NHẬT] Đường dẫn API mới
+    fetch('/api/register', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ho_ten: hoTen, so_dien_thoai: sdt, email: email, dia_chi: diaChi, mat_khau: matKhau })
@@ -33,7 +34,6 @@ function xuLyDangKy() {
     .catch(err => alert("Lỗi kết nối server"));
 }
 
-// Xử lý Đăng Nhập
 function xuLyDangNhap(event) {
     event.preventDefault();
     var emailInput = $('#tk').val().trim();
@@ -44,7 +44,8 @@ function xuLyDangNhap(event) {
         return;
     }
 
-    fetch('/api/dang-nhap', {
+    // [CẬP NHẬT] Đường dẫn API mới
+    fetch('/api/login', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailInput, mat_khau: matkhauInput })
@@ -53,12 +54,7 @@ function xuLyDangNhap(event) {
     .then(data => {
         if (data.success) {
             alert("Đăng nhập thành công!");
-            
-            // Lưu local để hiển thị tên trên Header
-            localStorage.setItem("username", data.user.ho_ten);
-            localStorage.setItem("currentUser", JSON.stringify(data.user));
-            
-            // CHUYỂN HƯỚNG THEO SERVER CHỈ ĐỊNH (Admin/Staff/User)
+            localStorage.setItem("user", JSON.stringify(data.user)); 
             if (data.redirectUrl) {
                 window.location.href = data.redirectUrl;
             } else {

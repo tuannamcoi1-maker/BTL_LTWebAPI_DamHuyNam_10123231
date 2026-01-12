@@ -1,33 +1,47 @@
 const StaffModel = require('../models/StaffModel');
 
 module.exports = {
-    // Trang quản lý đơn hàng
+    // Render View (Web)
     listOrders: (req, res) => {
         StaffModel.getAllOrders((err, orders) => {
-            res.render('staff/quan-ly-don-hang', { orders: orders });
+            res.render('staff/quan-ly-don-hang', { orders: orders || [] });
         });
     },
 
-    // Xem chi tiết đơn
+    // API: Lấy danh sách đơn hàng (JSON)
+    apiGetOrders: (req, res) => {
+        StaffModel.getAllOrders((err, orders) => {
+            res.json({ success: !err, data: orders || [] });
+        });
+    },
+
+    // API: Xem chi tiết đơn (Đã chuẩn JSON từ trước)
     viewOrderDetail: (req, res) => {
         StaffModel.getOrderDetail(req.params.id, (err, details) => {
-            res.json(details); // Trả về JSON để hiện popup hoặc render trang con
+            res.json(details || []);
         });
     },
 
-    // Xác nhận đơn hàng / Thanh toán
+    // API: Xác nhận/Cập nhật đơn hàng
     confirmOrder: (req, res) => {
         const orderId = req.params.id;
-        const action = req.body.action; // 'xac_nhan' hoặc 'thanh_toan' hoặc 'huy'
+        const action = req.body.action; 
         
-        let status = 'Cho_xac_nhan';
-        if(action === 'xac_nhan') status = 'Da_xac_nhan';
-        if(action === 'thanh_toan') status = 'Da_thanh_toan';
-        if(action === 'huy') status = 'Huy';
+        // [SỬA LẠI] Đảm bảo các trạng thái gán vào biến status là chữ thường (lowercase)
+        // để khớp với hiển thị ở frontend
+        let status = 'cho_xac_nhan';
+        
+        if(action === 'xac_nhan') status = 'da_xac_nhan';     // Sửa Da_ -> da_
+        if(action === 'thanh_toan') status = 'da_thanh_toan'; // Sửa Da_ -> da_
+        if(action === 'huy') status = 'huy';                  // Sửa Huy -> huy
 
         StaffModel.updateOrderStatus(orderId, status, (err) => {
-            if(err) res.json({success: false});
-            else res.json({success: true});
+            // Trả về JSON để fetch bên client nhận được
+            if (err) {
+                console.log(err);
+                return res.json({ success: false });
+            }
+            res.json({ success: true });
         });
     }
 };

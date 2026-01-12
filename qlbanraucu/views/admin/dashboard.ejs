@@ -8,8 +8,9 @@
 </head>
 <body>
     <div class="sidebar">
-        <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Nam Fruit Logo">
-        
+        <a href="/trang-chu" title="Về trang chủ">
+            <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Nam Fruit Logo">
+        </a>
         <h2>QUẢN TRỊ VIÊN</h2>
         
         <a class="menu-item active" onclick="openTab('tab-sanpham')">
@@ -23,6 +24,9 @@
         </a>
         <a class="menu-item" onclick="openTab('tab-khuyenmai')">
             <i class="fas fa-tags"></i> Quản lý Khuyến mãi
+        </a>
+        <a class="menu-item" onclick="openTab('tab-thongke')">
+            <i class="fas fa-chart-line"></i> Thống kê Doanh thu
         </a>
         
         <hr style="border-color: rgba(255,255,255,0.2);">
@@ -48,11 +52,11 @@
                     <div class="form-group" style="display: flex; gap: 20px;">
                         <div style="flex: 1;">
                             <label>Giá gốc (vnđ):</label>
-                            <input type="number" name="gia_goc" class="form-control" required>
+                            <input type="number" name="gia_goc" class="form-control" required placeholder="VD: 200000">
                         </div>
                         <div style="flex: 1;">
-                            <label>Giá bán (vnđ):</label>
-                            <input type="number" name="gia_ban" class="form-control" required>
+                            <label>Khuyến mãi (%):</label>
+                            <input type="number" name="khuyen_mai" class="form-control" value="0" min="0" max="100" placeholder="VD: 20">
                         </div>
                     </div>
 
@@ -60,12 +64,10 @@
                         <label>Hình ảnh (Tên file trong thư mục public/img):</label>
                         <input type="text" name="anh_dai_dien" class="form-control" placeholder="Ví dụ: tao-my.jpg">
                     </div>
-
                     <div class="form-group">
                         <label>Mô tả chi tiết:</label>
                         <textarea name="mo_ta" class="form-control" rows="3"></textarea>
                     </div>
-
                     <div class="form-group">
                         <label>Danh mục:</label>
                         <select name="ma_danh_muc" class="form-control">
@@ -74,12 +76,10 @@
                             <% }) %>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>Nguồn gốc / Xuất xứ:</label>
                         <input type="text" name="nguon_goc" class="form-control" placeholder="Ví dụ: Việt Nam, Mỹ, Úc...">
                     </div>
-
                     <button type="submit" class="btn btn-add">Lưu Sản Phẩm</button>
                 </form>
             </div>
@@ -90,8 +90,9 @@
                         <th>ID</th>
                         <th>Hình ảnh</th>
                         <th>Tên sản phẩm</th>
+                        <th>Giá gốc</th>
+                        <th>KM</th>
                         <th>Giá bán</th>
-                        <th>Nguồn gốc</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -102,8 +103,23 @@
                             <td><%= p.ma_san_pham %></td>
                             <td><img src="/img/<%= p.anh_dai_dien %>" width="50" style="border-radius: 4px;"></td>
                             <td style="font-weight: bold;"><%= p.ten_san_pham %></td>
-                            <td style="color: red;"><%= p.gia_ban.toLocaleString() %>đ</td>
-                            <td><%= p.nguon_goc %></td>
+                            
+                            <td style="color: #666; text-decoration: line-through;">
+                                <%= p.gia_goc ? p.gia_goc.toLocaleString() : 0 %>đ
+                            </td>
+                            <td>
+                                <% if(p.khuyen_mai > 0) { %>
+                                    <span style="background: yellow; color: red; padding: 2px 5px; font-weight: bold; border-radius: 4px;">
+                                        -<%= p.khuyen_mai %>%
+                                    </span>
+                                <% } else { %>
+                                    <span>-</span>
+                                <% } %>
+                            </td>
+                            <td style="color: red; font-weight: bold;">
+                                <%= p.gia_ban ? p.gia_ban.toLocaleString() : 0 %>đ
+                            </td>
+
                             <td>
                                 <a href="/admin/san-pham/xoa/<%= p.ma_san_pham %>" class="btn btn-del" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
                                     <i class="fas fa-trash"></i> Xóa
@@ -112,7 +128,7 @@
                         </tr>
                         <% }) %>
                     <% } else { %>
-                        <tr><td colspan="6" style="text-align: center;">Chưa có sản phẩm nào.</td></tr>
+                        <tr><td colspan="7" style="text-align: center;">Chưa có sản phẩm nào.</td></tr>
                     <% } %>
                 </tbody>
             </table>
@@ -163,7 +179,6 @@
         <div id="tab-danhmuc" class="tab-content">
             <h1 style="color: #82b53f;">Quản Lý Danh Mục</h1>
             <button class="btn btn-add" onclick="toggleForm('form-dm')">+ Thêm Danh Mục</button>
-            
             <div id="form-dm" class="box-add">
                 <form action="/admin/danh-muc/them" method="POST">
                     <div class="form-group">
@@ -173,7 +188,6 @@
                     <button type="submit" class="btn btn-add">Lưu Danh Mục</button>
                 </form>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -203,14 +217,12 @@
         <div id="tab-khuyenmai" class="tab-content">
             <h1 style="color: #82b53f;">Mã Giảm Giá & Khuyến Mãi</h1>
             <button class="btn btn-add" onclick="toggleForm('form-km')">+ Thêm Mã KM</button>
-            
             <div id="form-km" class="box-add">
                 <form action="/admin/khuyen-mai/them" method="POST">
                     <div class="form-group">
                         <label>Mã Code (Viết liền, không dấu):</label>
                         <input type="text" name="ma_code" class="form-control" placeholder="VD: TET2025" required>
                     </div>
-                    
                     <div class="form-group" style="display: flex; gap: 20px;">
                         <div style="flex: 1;">
                             <label>% Giảm:</label>
@@ -221,7 +233,6 @@
                             <input type="number" name="so_tien_giam" class="form-control" value="0">
                         </div>
                     </div>
-
                     <div class="form-group" style="display: flex; gap: 20px;">
                         <div style="flex: 1;">
                             <label>Ngày bắt đầu:</label>
@@ -232,11 +243,9 @@
                             <input type="date" name="ngay_ket_thuc" class="form-control">
                         </div>
                     </div>
-                    
                     <button type="submit" class="btn btn-add">Lưu Khuyến Mãi</button>
                 </form>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -273,6 +282,66 @@
                         <% }) %>
                     <% } else { %>
                         <tr><td colspan="5" style="text-align: center;">Chưa có mã khuyến mãi nào.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tab-thongke" class="tab-content">
+            <h1 style="color: #82b53f;">Thống Kê Doanh Thu</h1>
+            
+            <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex: 1; text-align: center;">
+                    <h3>Tổng Doanh Thu (Đã thu tiền)</h3>
+                    <p style="font-size: 24px; color: red; font-weight: bold;">
+                        <%= (typeof revenue !== 'undefined') ? revenue.toLocaleString() : 0 %> VNĐ
+                    </p>
+                </div>
+                <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex: 1; text-align: center;">
+                    <h3>Tổng Số Đơn Hàng</h3>
+                    <p style="font-size: 24px; color: blue; font-weight: bold;">
+                        <%= (typeof stats !== 'undefined') ? stats.length : 0 %> Đơn
+                    </p>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Ngày đặt</th>
+                        <th>Khách hàng</th>
+                        <th>Chi tiết Sản phẩm</th>
+                        <th>Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(typeof stats !== 'undefined' && stats.length > 0) { %>
+                        <% stats.forEach(order => { %>
+                        <tr>
+                            <td>#<%= order.ma_hoa_don %></td>
+                            <td><%= new Date(order.ngay_dat).toLocaleDateString('vi-VN') %></td>
+                            <td>
+                                <strong><%= order.khach_hang %></strong><br>
+                                <small><%= order.email %></small>
+                            </td>
+                            <td style="text-align: left;">
+                                <ul style="list-style: none; padding: 0; margin: 0;">
+                                    <% order.san_pham.forEach(prod => { %>
+                                        <li style="border-bottom: 1px dashed #eee; padding: 4px 0;">
+                                            - <%= prod.ten_san_pham %> 
+                                            <span style="color: #666;">(x<%= prod.so_luong %>)</span>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                            </td>
+                            <td style="color: red; font-weight: bold;">
+                                <%= order.tong_tien.toLocaleString() %>đ
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" style="text-align: center;">Chưa có dữ liệu đơn hàng đã thanh toán.</td></tr>
                     <% } %>
                 </tbody>
             </table>
