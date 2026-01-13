@@ -29,7 +29,10 @@ router.get('/gio-hang', auth.requireLogin, CartController.cartPage);
 // Giao diện Admin & Staff
 router.get('/admin/dashboard', auth.requireAdmin, AdminController.dashboard);
 router.get('/staff/orders', auth.requireStaff, StaffController.listOrders);
-
+// 1. API Xem chi tiết đơn hàng (Trả về JSON cho Popup Modal)
+router.get('/staff/orders/detail/:id', auth.requireStaff, StaffController.viewOrderDetail);
+// 2. API Cập nhật trạng thái đơn (Xác nhận / Hủy / Thanh toán)
+router.post('/staff/orders/update/:id', auth.requireStaff, StaffController.confirmOrder);
 
 // =========================================================
 // PHẦN 2: API DỮ LIỆU (Trả về JSON - Web gọi cái này để lấy Data)

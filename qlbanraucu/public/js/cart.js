@@ -75,7 +75,7 @@ function updateQuantity(cartId, newQty) {
     if (newQty < 1) return xoaItem(cartId);
 
     fetch('/api/cart/update', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ma_gio_hang: cartId, so_luong: newQty })
     })

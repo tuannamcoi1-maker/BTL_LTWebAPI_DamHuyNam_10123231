@@ -27,7 +27,7 @@ router.get('/logout', AuthController.logout);
 // ============================================
 router.get('/cart', auth.requireLogin, CartController.getCart); 
 router.post('/cart/add', auth.requireLogin, CartController.add); 
-router.post('/cart/update', auth.requireLogin, CartController.update);
+router.put('/cart/update', auth.requireLogin, CartController.update);
 router.delete('/cart/remove/:id', auth.requireLogin, CartController.remove); 
 
 // Check mã giảm giá

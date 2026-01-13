@@ -1,6 +1,36 @@
 const AdminModel = require('../models/AdminModel');
 const ProductModel = require('../models/ProductModel');
 
+// --- HÀM HỖ TRỢ XỬ LÝ LỖI XÓA (ĐÃ NÂNG CẤP) ---
+function handleDeleteResponse(req, res, err, redirectUrl, successMsg, errorMsgConstraint) {
+    const isApi = req.originalUrl.startsWith('/api') || req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1);
+
+    if (err) {
+        let finalMsg = "Lỗi hệ thống: " + err.message;
+        
+        // Mã lỗi 1451: Ràng buộc khóa ngoại
+        if (err.errno === 1451) {
+            finalMsg = errorMsgConstraint || "Dữ liệu đang được sử dụng, không thể xóa!";
+        }
+
+        if (isApi) {
+            return res.status(400).json({ success: false, message: finalMsg });
+        } else {
+            // [THAY ĐỔI QUAN TRỌNG] Redirect về trang cũ kèm thông báo lỗi trên URL
+            // encodeURIComponent giúp mã hóa tiếng Việt để không bị lỗi trên URL
+            return res.redirect(`${redirectUrl}?status=error&message=${encodeURIComponent(finalMsg)}`);
+        }
+    }
+
+    // Nếu thành công
+    if (isApi) {
+        return res.json({ success: true, message: successMsg });
+    } else {
+        // Redirect kèm thông báo thành công
+        return res.redirect(`${redirectUrl}?status=success&message=${encodeURIComponent(successMsg)}`);
+    }
+}
+
 // Hàm hỗ trợ format thống kê
 function processRevenueStats(rawStats) {
     const ordersMap = {};
@@ -60,8 +90,6 @@ module.exports = {
     // ================================================================
     // API DATA (JSON cho Postman)
     // ================================================================
-    
-    // 1. GET ALL LISTS
     apiGetAllProducts: (req, res) => {
         ProductModel.getAllProducts((err, data) => res.json({ success: !err, data: data || [] }));
     },
@@ -74,8 +102,6 @@ module.exports = {
     apiGetAllPromotions: (req, res) => {
         AdminModel.getAllPromotions((err, data) => res.json({ success: !err, data: data || [] }));
     },
-    
-    // 2. REVENUE STATS
     apiGetRevenueStats: (req, res) => {
         AdminModel.getRevenueStats((err, rawStats) => {
             if (err) return res.status(500).json({ success: false, message: "Lỗi DB: " + err.message });
@@ -90,19 +116,18 @@ module.exports = {
     },
 
     // ================================================================
-    // CRUD XỬ LÝ (Dùng chung logic, check request type để trả về)
+    // CRUD XỬ LÝ (SỬ DỤNG HÀM XỬ LÝ LỖI CHUNG)
     // ================================================================
     
-    // --- SẢN PHẨM ---
+    // --- 1. SẢN PHẨM ---
     createProduct: (req, res) => {
         AdminModel.addProduct(req.body, (err) => {
-            if(req.originalUrl.includes('/api')) { // Check nếu gọi từ API
+            if(req.originalUrl.includes('/api')) { 
                 return res.json({ success: !err, message: err ? err.sqlMessage : "Thêm sản phẩm thành công" });
             }
             res.redirect('/admin/dashboard');
         });
     }, 
-    // [THÊM] API Update Product
     updateProduct: (req, res) => {
         AdminModel.updateProduct(req.params.id, req.body, (err) => {
              return res.json({ success: !err, message: err ? err.sqlMessage : "Cập nhật sản phẩm thành công" });
@@ -110,14 +135,16 @@ module.exports = {
     },
     deleteProduct: (req, res) => {
         AdminModel.deleteProduct(req.params.id, (err) => {
-            if(req.originalUrl.includes('/api')) {
-                return res.json({ success: !err, message: "Đã xóa sản phẩm" });
-            }
-            res.redirect('/admin/dashboard');
+            handleDeleteResponse(
+                req, res, err, 
+                '/admin/dashboard', 
+                "Đã xóa sản phẩm", 
+                "Không thể xóa: Sản phẩm này đã có trong Đơn hàng hoặc Giỏ hàng!"
+            );
         });
     },
 
-    // --- DANH MỤC ---
+    // --- 2. DANH MỤC ---
     createCategory: (req, res) => {
         AdminModel.addCategory(req.body, (err) => {
             if(req.originalUrl.includes('/api')) return res.json({ success: !err, message: "Thêm danh mục thành công" });
@@ -132,20 +159,28 @@ module.exports = {
     },
     deleteCategory: (req, res) => {
         AdminModel.deleteCategory(req.params.id, (err) => {
-            if(req.originalUrl.includes('/api')) return res.json({ success: !err, message: "Đã xóa danh mục" });
-            res.redirect('/admin/dashboard');
+            handleDeleteResponse(
+                req, res, err, 
+                '/admin/dashboard', 
+                "Đã xóa danh mục", 
+                "Không thể xóa: Danh mục này đang chứa Sản phẩm. Hãy xóa SP trước!"
+            );
         });
     },
 
-    // --- NGƯỜI DÙNG ---
+    // --- 3. NGƯỜI DÙNG ---
     deleteUser: (req, res) => {
         AdminModel.deleteUser(req.params.id, (err) => {
-            if(req.originalUrl.includes('/api')) return res.json({ success: !err, message: "Đã xóa người dùng" });
-            res.redirect('/admin/dashboard');
+            handleDeleteResponse(
+                req, res, err, 
+                '/admin/dashboard', 
+                "Đã xóa người dùng", 
+                "Không thể xóa: Người dùng này đã có lịch sử Đơn hàng. Chỉ nên khóa tài khoản!"
+            );
         });
     },
 
-    // --- KHUYẾN MÃI ---
+    // --- 4. KHUYẾN MÃI ---
     createPromotion: (req, res) => {
         AdminModel.addPromotion(req.body, (err) => {
             if(req.originalUrl.includes('/api')) return res.json({ success: !err, message: "Thêm khuyến mãi thành công" });
@@ -160,8 +195,12 @@ module.exports = {
     },
     deletePromotion: (req, res) => {
         AdminModel.deletePromotion(req.params.id, (err) => {
-            if(req.originalUrl.includes('/api')) return res.json({ success: !err, message: "Đã xóa khuyến mãi" });
-            res.redirect('/admin/dashboard');
+            handleDeleteResponse(
+                req, res, err, 
+                '/admin/dashboard', 
+                "Đã xóa khuyến mãi", 
+                "Không thể xóa: Mã này đã được sử dụng trong các Đơn hàng cũ!"
+            );
         });
     }
 };
