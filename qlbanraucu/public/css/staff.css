@@ -72,7 +72,7 @@ th, td { padding: 12px 15px; border-bottom: 1px solid #ddd; text-align: left; }
 th { background-color: var(--primary-green); color: white; text-transform: uppercase; font-size: 14px; }
 tr:hover { background-color: #f1f1f1; }
 
-/* --- STATUS BADGES --- */
+/* --- STATUS BADGES (Cũ - Giữ lại cho các trang khác) --- */
 .status { padding: 5px 12px; border-radius: 20px; font-size: 0.85em; font-weight: bold; display: inline-block; }
 .cho_xac_nhan { background: #ffeeba; color: #856404; }
 .da_xac_nhan { background: #d4edda; color: #155724; }
@@ -94,3 +94,32 @@ tr:hover { background-color: #f1f1f1; }
 .close:hover { color: black; }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ======================================================== */
+/* [MỚI] NEW BADGES - DÀNH CHO TRANG LỊCH SỬ GIAO DỊCH      */
+/* ======================================================== */
+
+/* Kiểu dáng chung cho nhãn trạng thái mới */
+.badge-staff {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 1. Màu Xanh cho Đã thanh toán */
+.badge-staff.success {
+    background-color: #eafaf1;
+    color: #27ae60;
+    border: 1px solid #27ae60;
+}
+
+/* [ĐÃ SỬA] Màu Đỏ cho Đã hủy - Đồng bộ độ đậm với Đã thanh toán */
+.badge-staff.cancel {
+    background-color: #fceaea;      /* Nền hồng nhạt */
+    color: #c0392b;                 /* Chữ đỏ đậm */
+    border: 1px solid #c0392b;      /* Viền đỏ */
+}

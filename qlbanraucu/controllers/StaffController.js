@@ -34,20 +34,17 @@ module.exports = {
         const orderId = req.params.id;
         const action = req.body.action; 
         
-        // [SỬA LẠI] Đảm bảo các trạng thái gán vào biến status là chữ thường (lowercase)
-        // để khớp với hiển thị ở frontend
-        let status = 'cho_xac_nhan';
+        let status = 'cho_xac_nhan'; // Mặc định
         
-        if(action === 'xac_nhan') status = 'da_xac_nhan';     // Sửa Da_ -> da_
-        if(action === 'thanh_toan') status = 'da_thanh_toan'; // Sửa Da_ -> da_
-        if(action === 'huy') status = 'huy';                  // Sửa Huy -> huy
+        if(action === 'xac_nhan') status = 'da_xac_nhan';
+        if(action === 'thanh_toan') status = 'da_thanh_toan';
+        
+        // [QUAN TRỌNG] Thêm dòng này để xử lý hủy
+        if(action === 'huy') status = 'da_huy'; 
 
+        // Gọi Model cập nhật
         StaffModel.updateOrderStatus(orderId, status, (err) => {
-            // Trả về JSON để fetch bên client nhận được
-            if (err) {
-                console.log(err);
-                return res.json({ success: false });
-            }
+            if(err) return res.json({ success: false, message: "Lỗi DB" });
             res.json({ success: true });
         });
     }

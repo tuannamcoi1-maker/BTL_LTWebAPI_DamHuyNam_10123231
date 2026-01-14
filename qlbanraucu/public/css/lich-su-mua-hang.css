@@ -1,0 +1,51 @@
+/* Cấu hình chung */
+:root { --primary-color: #27ae60; --bg-color: #f4f7f6; }
+body { background-color: var(--bg-color); font-family: 'Segoe UI', sans-serif; margin: 0; }
+.container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+
+/* Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.page-title { margin: 0; font-size: 24px; color: var(--primary-color); text-transform: uppercase; font-weight: 700; }
+.btn-back { display: inline-flex; align-items: center; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; border: 2px solid transparent; }
+.btn-back:hover { background-color: white; color: var(--primary-color); border-color: var(--primary-color); }
+
+/* Bảng */
+.order-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+table { width: 100%; border-collapse: collapse; }
+th { background-color: #f8fbf9; color: #666; font-weight: 600; text-align: left; padding: 18px; border-bottom: 2px solid #edf2ef; text-transform: uppercase; font-size: 13px; }
+td { padding: 18px; border-bottom: 1px solid #f0f5f2; vertical-align: middle; }
+.order-id { font-weight: 700; color: #2c3e50; }
+.order-date { color: #7f8c8d; font-size: 14px; }
+.order-total { color: #e74c3c; font-weight: 700; font-size: 16px; }
+
+/* --- STYLE CHO CÁC NÚT TRẠNG THÁI --- */
+.status-pill { 
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; 
+}
+.status-pill i { margin-right: 5px; }
+
+/* 1. Đã thanh toán (Xanh lá) */
+.bg-success { background-color: #eafaf1; color: #27ae60; border: 1px solid #27ae60; }
+
+/* 2. Đang giao (Xanh dương) */
+.bg-shipping { background-color: #e8f6fd; color: #3498db; border: 1px solid #3498db; }
+
+/* 3. Chờ xác nhận (Vàng cam) */
+.bg-pending { background-color: #fff9e6; color: #f39c12; border: 1px solid #f39c12; }
+
+/* [ĐÃ SỬA] Trạng thái ĐÃ HỦY - Nhẹ nhàng hơn */
+.bg-cancel { 
+    background-color: #fceaea;      /* Nền hồng rất nhạt */
+    color: #c0392b;                 /* Chữ màu đỏ đậm */
+    border: 1px solid #c0392b;      /* Viền mỏng màu đỏ */
+    box-shadow: none;               /* Bỏ hiệu ứng bóng đổ cho đỡ nặng nề */
+}
+
+/* Link Xem chi tiết */
+.btn-view-detail { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+.btn-view-detail:hover { text-decoration: underline; }
+
+/* Trạng thái trống */
+.empty-state { text-align: center; padding: 60px; }
+.empty-state i { font-size: 60px; color: #ddd; margin-bottom: 20px; }
+.empty-state p { color: #999; font-size: 18px; }
