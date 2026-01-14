@@ -1,14 +1,27 @@
 const db = require('../config/db');
 
 module.exports = {
-    getAllOrders: (cb) => {
+    // 1. Chỉ lấy đơn hàng CHƯA thanh toán (Hiện ở Quản lý)
+    getPendingOrders: (cb) => {
         var sql = `SELECT hd.*, nd.ho_ten 
                    FROM hoa_don hd 
                    JOIN nguoi_dung nd ON hd.ma_nguoi_dung = nd.ma_nguoi_dung 
-                   ORDER BY hd.ngay_dat_hang DESC`; // Đã sửa thành ngay_dat_hang cho khớp DB
+                   WHERE hd.trang_thai != 'da_thanh_toan' 
+                   ORDER BY hd.ngay_dat_hang DESC`; 
+        db.query(sql, cb);
+    },
+
+    // 2. Chỉ lấy đơn hàng ĐÃ thanh toán (Hiện ở Lịch sử)
+    getPaidOrders: (cb) => {
+        var sql = `SELECT hd.*, nd.ho_ten 
+                   FROM hoa_don hd 
+                   JOIN nguoi_dung nd ON hd.ma_nguoi_dung = nd.ma_nguoi_dung 
+                   WHERE hd.trang_thai = 'da_thanh_toan' 
+                   ORDER BY hd.ngay_dat_hang DESC`; 
         db.query(sql, cb);
     },
     
+    // Giữ nguyên các hàm getOrderDetail và updateOrderStatus bên dưới...
     getOrderDetail: (orderId, cb) => {
         var sql = `SELECT ct.*, sp.ten_san_pham, sp.anh_dai_dien 
                    FROM chi_tiet_hoa_don ct 

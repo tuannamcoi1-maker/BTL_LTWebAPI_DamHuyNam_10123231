@@ -52,3 +52,23 @@ function logout() {
     // localStorage.removeItem("username"); // Dòng này có thể không cần nếu bạn lưu tất cả trong 'user'
     window.location.href = "/dang-nhap";
 }
+$(document).ready(function() {
+    checkLoginHeader(); // Hàm cũ của bạn
+
+    //Lắng nghe phím Enter cho ô tìm kiếm
+    $('#searchInput').on('keypress', function(e) {
+        if (e.which == 13) { // 13 là mã phím Enter
+            thucHienTimKiem();
+        }
+    });
+});
+
+function thucHienTimKiem() {
+    const keyword = $('#searchInput').val().trim();
+    if (!keyword) {
+        alert("Vui lòng nhập tên sản phẩm cần tìm!");
+        return;
+    }
+    // Chuyển hướng trang kèm tham số q
+    window.location.href = `/trang-chu?q=${encodeURIComponent(keyword)}`;
+}

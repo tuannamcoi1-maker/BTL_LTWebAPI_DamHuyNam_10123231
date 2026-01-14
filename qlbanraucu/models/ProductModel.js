@@ -15,5 +15,10 @@ module.exports = {
     },
     getAllCategories: (callback) => {
         db.query("SELECT * FROM danh_muc", callback);
+    },
+    searchProducts: (keyword, callback) => {
+        // Tìm kiếm theo tên sản phẩm
+        const sql = "SELECT * FROM san_pham WHERE ten_san_pham LIKE ?";
+        db.query(sql, [`%${keyword}%`], callback);
     }
 };

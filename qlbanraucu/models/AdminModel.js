@@ -66,5 +66,21 @@ module.exports = {
             ORDER BY hd.ngay_dat_hang DESC
         `;
         db.query(sql, cb);
+    },
+    // --- THÊM HÀM CẬP NHẬT TRẠNG THÁI TỰ ĐỘNG ---
+    updatePromotionStates: (cb) => {
+        // Logic SQL:
+        // - Nếu hôm nay nhỏ hơn ngày bắt đầu -> Gán 0 (Chưa chạy)
+        // - Nếu hôm nay lớn hơn ngày kết thúc -> Gán 2 (Kết thúc)
+        // - Còn lại -> Gán 1 (Đang chạy)
+        const sql = `
+            UPDATE khuyen_mai
+            SET trang_thai = CASE
+                WHEN CURDATE() < ngay_bat_dau THEN 0
+                WHEN CURDATE() > ngay_ket_thuc THEN 2
+                ELSE 1
+            END
+        `;
+        db.query(sql, cb);
     }
 };

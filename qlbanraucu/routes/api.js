@@ -21,7 +21,8 @@ router.get('/categories', ProductController.apiGetCategories);
 router.post('/register', AuthController.register); 
 router.post('/login', AuthController.login); 
 router.get('/logout', AuthController.logout); 
-
+// API Cập nhật thông tin cá nhân (Profile)
+router.post('/user/update', auth.requireLogin, AuthController.updateProfile);
 // ============================================
 // 2. USER - GIỎ HÀNG 
 // ============================================
@@ -34,7 +35,12 @@ router.delete('/cart/remove/:id', auth.requireLogin, CartController.remove);
 router.post('/cart/apply-coupon', auth.requireLogin, CartController.applyCoupon);
 // Thanh toán
 router.post('/cart/checkout', auth.requireLogin, CartController.checkout);
-
+// Lấy lịch sử đơn hàng của người dùng
+router.get('/user/orders', auth.requireLogin, (req, res) => {
+    UserModel.getOrdersByUserId(req.session.user.ma_nguoi_dung, (err, orders) => {
+        res.json({ success: !err, data: orders || [] });
+    });
+});
 // ============================================
 // 3. ADMIN API (Quản trị viên)
 // ============================================
@@ -72,5 +78,6 @@ router.get('/staff/orders', auth.requireStaff, StaffController.apiGetOrders);
 router.get('/staff/orders/:id', auth.requireStaff, StaffController.viewOrderDetail); 
 // Xác nhận / Hủy / Thanh toán đơn
 router.post('/staff/orders/update/:id', auth.requireStaff, StaffController.confirmOrder); 
-
+// API Lấy danh sách lịch sử đơn hàng (Đã thanh toán)
+router.get('/staff/history', auth.requireStaff, StaffController.listHistory);
 module.exports = router;

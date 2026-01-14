@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết đơn hàng #<%= orderId %></title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <link rel="stylesheet" href="/css/chi-tiet-don-hang.css">
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h2 class="page-title"><i class="fa-solid fa-file-invoice"></i> Chi tiết đơn hàng #<%= orderId %></h2>
+            <a href="/lich-su-mua-hang" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Quay lại lịch sử</a>
+        </div>
+
+        <div class="detail-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Tên</th>
+                        <th>Giá lúc mua</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let total = 0; %>
+                    <% details.forEach(item => { 
+                        let subtotal = item.don_gia_luc_mua * item.so_luong;
+                        total += subtotal;
+                    %>
+                    <tr>
+                        <td><img src="/img/<%= item.anh_dai_dien %>" class="img-prod"></td>
+                        <td><%= item.ten_san_pham %></td>
+                        <td><%= item.don_gia_luc_mua.toLocaleString() %>₫</td>
+                        <td style="text-align: center;"><%= item.so_luong %></td>
+                        <td style="font-weight: bold;"><%= subtotal.toLocaleString() %>₫</td>
+                    </tr>
+                    <% }) %>
+                    <tr>
+                        <td colspan="4" style="text-align: right; font-weight: bold; padding-top: 20px;">Tổng tiền hàng:</td>
+                        <td class="total-row" style="padding-top: 20px;"><%= total.toLocaleString() %>₫</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

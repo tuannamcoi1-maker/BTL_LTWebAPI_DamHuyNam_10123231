@@ -3,46 +3,39 @@ const ProductModel = require('../models/ProductModel');
 module.exports = {
     index: (req, res) => {
         var maDanhMuc = req.query.danhmuc;
-        
-        // Hàm hỗ trợ xử lý dữ liệu sản phẩm trước khi hiển thị
-        const renderView = (err, products, categories) => {
-            if (err) {
-                console.log(err);
-                return res.send("Lỗi lấy dữ liệu sản phẩm");
-            }
+        var keyword = req.query.q; //Lấy từ khóa tìm kiếm từ URL
 
-            // --- TÍNH TOÁN KHUYẾN MÃI ---
+        const renderView = (err, products, categories) => {
+            if (err) return res.send("Lỗi lấy dữ liệu");
+
             const productsWithDiscount = (products || []).map(product => {
+                // Sử dụng logic khuyến mãi đã có
                 let phanTramGiam = 0;
-                // Kiểm tra: Nếu có giá gốc VÀ giá gốc > giá bán thì mới tính %
                 if (product.gia_goc && product.gia_goc > product.gia_ban) {
                     phanTramGiam = Math.round(((product.gia_goc - product.gia_ban) / product.gia_goc) * 100);
                 }
-
-                return {
-                    ...product,
-                    phan_tram_giam: phanTramGiam, // Thêm trường % giảm
-                    co_khuyen_mai: phanTramGiam > 0 // Cờ đánh dấu có khuyến mãi hay không
-                };
+                return { ...product, phan_tram_giam: phanTramGiam, co_khuyen_mai: phanTramGiam > 0 };
             });
-            // ---------------------------
 
             res.render('btlon', { 
                 products: productsWithDiscount, 
                 categories: categories || [], 
-                currentCat: maDanhMuc 
+                currentCat: maDanhMuc,
+                searchKeyword: keyword // Gửi từ khóa lại giao diện để hiển thị (nếu cần)
             });
         };
 
-        // Bắt đầu lấy danh mục trước
         ProductModel.getAllCategories((err, categories) => {
-            if (maDanhMuc) {
-                // Nếu có chọn danh mục -> Lọc theo danh mục
+            if (keyword) {
+                // [QUAN TRỌNG] Nếu có từ khóa, gọi hàm search trong Model
+                ProductModel.searchProducts(keyword, (err, products) => {
+                    renderView(err, products, categories);
+                });
+            } else if (maDanhMuc) {
                 ProductModel.getProductsByCategory(maDanhMuc, (err, products) => {
                     renderView(err, products, categories);
                 });
             } else {
-                // Nếu không -> Lấy tất cả
                 ProductModel.getAllProducts((err, products) => {
                     renderView(err, products, categories);
                 });

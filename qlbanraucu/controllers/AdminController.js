@@ -66,26 +66,47 @@ function processRevenueStats(rawStats) {
 module.exports = {
     // --- DASHBOARD (WEB) ---
     dashboard: (req, res) => {
-        ProductModel.getAllProducts((err, products) => {
-            AdminModel.getAllUsers((err, users) => {
-                AdminModel.getAllCategories((err, categories) => {
-                    AdminModel.getAllPromotions((err, promotions) => {
-                        AdminModel.getRevenueStats((err, rawStats) => {
-                            const processedData = processRevenueStats(rawStats);
-                            res.render('admin/dashboard', { 
-                                products: products || [], 
-                                users: users || [],
-                                categories: categories || [],
-                                promotions: promotions || [],
-                                stats: processedData.orders,
-                                revenue: processedData.totalRevenue
-                            });
-                        });
-                    });
-                });
-            });
-        });
-    }, 
+        // B1: Cập nhật trạng thái
+        AdminModel.updatePromotionStates((err) => {
+            if(err) console.log("Lỗi update trạng thái:", err);
+
+            // B2: Lấy sản phẩm (Biến 'products' được tạo ra ở đây)
+            ProductModel.getAllProducts((err, products) => { 
+                
+                // B3: Lấy người dùng
+                AdminModel.getAllUsers((err, users) => {
+                    
+                    // B4: Lấy danh mục
+                    AdminModel.getAllCategories((err, categories) => {
+                        
+                        // B5: Lấy khuyến mãi
+                        AdminModel.getAllPromotions((err, promotions) => {
+                            
+                            // B6: Lấy thống kê
+                            AdminModel.getRevenueStats((err, rawStats) => {
+                                const processedData = processRevenueStats(rawStats);
+                                
+                                // Debug: In ra xem có sản phẩm không
+                                console.log("Số lượng sản phẩm lấy được:", products ? products.length : 0);
+
+                                // B7: Render giao diện (Tất cả biến phải nằm trong hàm này)
+                                res.render('admin/dashboard', { 
+                                    products: products || [],     // <-- Biến này lấy từ B2
+                                    users: users || [],
+                                    categories: categories || [],
+                                    promotions: promotions || [],
+                                    stats: processedData.orders,
+                                    revenue: processedData.totalRevenue
+                                });
+
+                            }); // Kết thúc B6
+                        }); // Kết thúc B5
+                    }); // Kết thúc B4
+                }); // Kết thúc B3
+            }); // Kết thúc B2 (QUAN TRỌNG: Dấu ngoặc này phải bao trùm tất cả các hàm bên trong)
+        
+        }); // Kết thúc B1
+    },
 
     // ================================================================
     // API DATA (JSON cho Postman)

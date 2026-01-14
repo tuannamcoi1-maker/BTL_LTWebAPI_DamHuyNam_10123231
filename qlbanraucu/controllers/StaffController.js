@@ -1,10 +1,17 @@
 const StaffModel = require('../models/StaffModel');
 
 module.exports = {
-    // Render View (Web)
+    // Hiển thị trang Quản lý đơn hàng (Chỉ đơn chưa thanh toán)
     listOrders: (req, res) => {
-        StaffModel.getAllOrders((err, orders) => {
+        StaffModel.getPendingOrders((err, orders) => {
             res.render('staff/quan-ly-don-hang', { orders: orders || [] });
+        });
+    },
+
+    // THÊM MỚI: Hiển thị trang Lịch sử giao dịch (Chỉ đơn đã thanh toán)
+    listHistory: (req, res) => {
+        StaffModel.getPaidOrders((err, orders) => {
+            res.render('staff/lich-su-giao-dich', { orders: orders || [] });
         });
     },
 

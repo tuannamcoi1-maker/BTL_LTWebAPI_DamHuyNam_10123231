@@ -8,7 +8,50 @@ module.exports = {
     registerPage: (req, res) => res.render('dang-ky'),
 
     // --- API XỬ LÝ ---
+    // 1. Hiển thị trang tài khoản
+    profilePage: (req, res) => {
+        const userId = req.session.user.ma_nguoi_dung; // Lấy ID từ session
+        UserModel.findById(userId, (err, results) => {
+            if (err || results.length === 0) return res.redirect('/trang-chu');
+            res.render('tai-khoan', { user: results[0] });
+        });
+    },
 
+    // 2. Xử lý cập nhật thông tin & đổi mật khẩu
+    updateProfile: (req, res) => {
+        const userId = req.session.user.ma_nguoi_dung;
+        const { ho_ten, so_dien_thoai, email, mat_khau_cu, mat_khau_moi } = req.body;
+
+        UserModel.findById(userId, (err, results) => {
+            const user = results[0];
+            
+            // KIỂM TRA MẬT KHẨU CŨ (Nếu người dùng muốn đổi mật khẩu)
+            if (mat_khau_moi && mat_khau_cu !== user.mat_khau) {
+                return res.json({ success: false, message: "Mật khẩu cũ không chính xác!" });
+            }
+
+            // Cập nhật thông tin cơ bản
+            UserModel.updateInfo(userId, { ho_ten, so_dien_thoai, email }, (err) => {
+                if (err) return res.json({ success: false, message: "Lỗi cập nhật thông tin" });
+
+                // Nếu có mật khẩu mới thì cập nhật luôn
+                if (mat_khau_moi) {
+                    UserModel.updatePassword(userId, mat_khau_moi, (err) => {
+                        if (err) return res.json({ success: false, message: "Lỗi đổi mật khẩu" });
+                        updateSessionAndResponse();
+                    });
+                } else {
+                    updateSessionAndResponse();
+                }
+            });
+
+            function updateSessionAndResponse() {
+                // Cập nhật lại session để giao diện đổi tên ngay lập tức
+                req.session.user.ho_ten = ho_ten;
+                res.json({ success: true, message: "Cập nhật thành công!" });
+            }
+        });
+    },
     // 1. Đăng ký
     register: (req, res) => {
         UserModel.create(req.body, (err) => {
@@ -61,6 +104,38 @@ module.exports = {
 
             // -> Nếu là Web bình thường thì chuyển về trang đăng nhập
             res.redirect('/dang-nhap');
+        });
+    },
+    // 4. Hiển thị trang Lịch sử mua hàng
+    orderHistoryPage: (req, res) => {
+        const userId = req.session.user.ma_nguoi_dung; // Lấy ID từ session
+        UserModel.getOrdersByUserId(userId, (err, orders) => {
+            if (err) return res.send("Lỗi lấy lịch sử mua hàng");
+            res.render('lich-su-mua-hang', { orders: orders || [] });
+        });
+    },
+    // Thêm hàm hiển thị trang chi tiết đơn hàng
+    orderDetailPage: (req, res) => {
+        const orderId = req.params.id;
+        const userId = req.session.user.ma_nguoi_dung; // Lấy ID user từ session
+        
+        // Gọi Model đã viết ở Bước 1
+        UserModel.getOrderDetailById(orderId, userId, (err, details) => {
+            if (err) {
+                console.log(err);
+                return res.send("Lỗi hệ thống");
+            }
+            
+            // Nếu không tìm thấy chi tiết (hoặc đơn hàng không phải của user này)
+            if (!details || details.length === 0) {
+                return res.send("Không tìm thấy đơn hàng hoặc bạn không có quyền xem.");
+            }
+
+            // Render ra view (sẽ tạo ở Bước 4)
+            res.render('chi-tiet-don-hang', { 
+                details: details, 
+                orderId: orderId 
+            });
         });
     }
 };

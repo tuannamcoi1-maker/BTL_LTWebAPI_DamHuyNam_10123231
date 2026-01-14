@@ -24,13 +24,23 @@ module.exports = {
     },
 
     requireStaff: (req, res, next) => {
-        if (req.session.user && (req.session.user.vai_tro === 'nhan_vien' || req.session.user.vai_tro === 'admin')) {
+        // 1. Kiểm tra xem đã đăng nhập chưa
+        if (!req.session || !req.session.user) {
+            if (req.originalUrl.startsWith('/api') || req.xhr || req.headers.accept.indexOf('json') > -1) {
+                return res.status(401).json({ success: false, message: "Vui lòng đăng nhập." });
+            }
+            return res.redirect('/dang-nhap'); // Chưa đăng nhập thì về trang login
+        }
+
+        // 2. Nếu đã đăng nhập, kiểm tra quyền
+        const role = req.session.user.vai_tro; // Sử dụng vai_tro như trong Controller
+        if (role === 'nhan_vien' || role === 'admin') {
             next();
         } else {
             if (req.originalUrl.startsWith('/api') || req.xhr || req.headers.accept.indexOf('json') > -1) {
                 return res.status(403).json({ success: false, message: "Không có quyền Nhân viên." });
             }
-            res.status(403).send('<h1>Lỗi 403: Cấm truy cập</h1><a href="/trang-chu">Về trang chủ</a>');
+            res.status(403).send('<h1>Lỗi 403: Bạn không có quyền truy cập trang này</h1><a href="/trang-chu">Về trang chủ</a>');
         }
     }
 };

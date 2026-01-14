@@ -29,10 +29,9 @@ module.exports = {
         db.query("DELETE FROM gio_hang WHERE ma_gio_hang = ?", [id], callback);
     },
     checkPromotion: (code, callback) => {
-        const sql = `SELECT * FROM khuyen_mai 
-                     WHERE ma_code = ? 
-                     AND trang_thai = 1 
-                     AND CURDATE() BETWEEN ngay_bat_dau AND ngay_ket_thuc`;
+        // Chỉ chọn mã có trang_thai = 1 (Đang chạy)
+        // Không cần check ngày nữa vì hàm update ở Admin đã lo việc đó rồi
+        const sql = "SELECT * FROM khuyen_mai WHERE ma_code = ? AND trang_thai = 1";
         db.query(sql, [code], callback);
     },
     

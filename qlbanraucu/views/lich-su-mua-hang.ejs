@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử mua hàng - NAM FRUIT</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/Font/fontawesome-free-6.7.2-web/css/all.min.css">
+    <style>
+        :root { --primary-color: #27ae60; --text-color: #333; --bg-color: #f4f7f6; }
+        body { background-color: var(--bg-color); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text-color); margin: 0; }
+        
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        
+        /* Header trang */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .page-title { margin: 0; font-size: 24px; color: var(--primary-color); text-transform: uppercase; font-weight: 700; }
+        .page-title i { margin-right: 10px; }
+
+        /* Nút quay về thiết kế lại */
+        .btn-back { display: inline-flex; align-items: center; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; border: 2px solid transparent; }
+        .btn-back i { margin-right: 8px; }
+        .btn-back:hover { background-color: white; color: var(--primary-color); border-color: var(--primary-color); transform: translateY(-2px); }
+
+        /* Bảng lịch sử */
+        .order-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #f8fbf9; color: #666; font-weight: 600; text-align: left; padding: 18px; border-bottom: 2px solid #edf2ef; text-transform: uppercase; font-size: 13px; }
+        td { padding: 18px; border-bottom: 1px solid #f0f5f2; vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #fcfdfc; }
+
+        /* Trạng thái và giá tiền */
+        .order-id { font-weight: 700; color: #2c3e50; }
+        .order-date { color: #7f8c8d; font-size: 14px; }
+        .order-total { color: #e74c3c; font-weight: 700; font-size: 16px; }
+        
+        .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; }
+        .status-pill i { margin-right: 5px; }
+        .bg-pending { background-color: #fff9e6; color: #f39c12; }
+        .bg-success { background-color: #eafaf1; color: #27ae60; }
+
+        /* Trang thái trống */
+        .empty-state { text-align: center; padding: 60px; background: white; border-radius: 12px; }
+        .empty-state i { font-size: 60px; color: #ddd; margin-bottom: 20px; }
+        .empty-state p { color: #999; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="page-header">
+            <h2 class="page-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử mua hàng</h2>
+            <a href="/trang-chu" class="btn-back">
+                <i class="fa-solid fa-house"></i> Quay lại trang chủ
+            </a>
+        </div>
+
+        <div class="order-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Thời gian đặt</th>
+                        <th>Tổng thanh toán</th>
+                        <th>Trạng thái đơn</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(orders && orders.length > 0) { %>
+                        <% orders.forEach(function(order) { %>
+                            <tr>
+                                <td class="order-id">#<%= order.ma_hoa_don %></td>
+                                <td class="order-date">
+                                    <i class="fa-regular fa-calendar-check" style="margin-right: 5px;"></i>
+                                    <%= new Date(order.ngay_dat_hang).toLocaleString('vi-VN') %>
+                                </td>
+                                <td class="order-total">
+                                    <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.tong_tien) %>
+                                </td>
+                                <td>
+                                    <% if(order.trang_thai === 'da_thanh_toan') { %>
+                                        <span class="status-pill bg-success">
+                                            <i class="fa-solid fa-circle-check"></i> Đã thanh toán
+                                        </span>
+                                    <% } else { %>
+                                        <span class="status-pill bg-pending">
+                                            <i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý
+                                        </span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <a href="/chi-tiet-don-hang/<%= order.ma_hoa_don %>" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                                        Xem chi tiết
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <p>Bạn chưa có đơn hàng nào trong lịch sử.</p>
+                                    <a href="/trang-chu" class="btn-back" style="margin-top: 20px;">Mua sắm ngay</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

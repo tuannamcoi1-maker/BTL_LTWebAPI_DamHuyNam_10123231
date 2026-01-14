@@ -3,7 +3,7 @@ var router = express.Router();
 
 // --- IMPORT CÁC CONTROLLER ---
 var HomeController = require('../controllers/HomeController');
-var AuthController = require('../controllers/AuthController');
+var AuthController = require('../controllers/authController');
 var CartController = require('../controllers/CartController');
 var AdminController = require('../controllers/AdminController');
 var StaffController = require('../controllers/StaffController');
@@ -20,15 +20,23 @@ router.get('/chi-tiet-san-pham/:id', HomeController.detail);
 
 // Auth
 router.get('/dang-nhap', AuthController.loginPage);
+router.post('/dang-nhap', AuthController.login);
 router.get('/dang-ky', AuthController.registerPage);
 router.get('/dang-xuat', AuthController.logout);
-
+// tài khoản
+router.get('/tai-khoan', auth.requireLogin, AuthController.profilePage); // Xem trang
+router.post('/api/user/update', auth.requireLogin, AuthController.updateProfile); // Gửi data
 // [QUAN TRỌNG] Route hiển thị khung trang giỏ hàng
 router.get('/gio-hang', auth.requireLogin, CartController.cartPage);
-
+// Lịch sử mua hàng
+router.get('/lich-su-mua-hang', auth.requireLogin, AuthController.orderHistoryPage);
+// [MỚI] Thêm dòng này để xem chi tiết đơn hàng
+router.get('/chi-tiet-don-hang/:id', auth.requireLogin, AuthController.orderDetailPage);
 // Giao diện Admin & Staff
 router.get('/admin/dashboard', auth.requireAdmin, AdminController.dashboard);
 router.get('/staff/orders', auth.requireStaff, StaffController.listOrders);
+// MỞ TRANG LỊCH SỬ
+router.get('/staff/history', auth.requireStaff, StaffController.listHistory);
 // 1. API Xem chi tiết đơn hàng (Trả về JSON cho Popup Modal)
 router.get('/staff/orders/detail/:id', auth.requireStaff, StaffController.viewOrderDetail);
 // 2. API Cập nhật trạng thái đơn (Xác nhận / Hủy / Thanh toán)
@@ -51,7 +59,7 @@ router.delete('/api/cart/remove/:id', auth.requireLogin, CartController.remove);
 router.post('/api/cart/apply-coupon', auth.requireLogin, CartController.applyCoupon);
 router.post('/api/cart/checkout', auth.requireLogin, CartController.checkout);
 
-// API Admin (Giữ nguyên các route admin cũ của bạn)
+// API Admin 
 router.post('/admin/san-pham/them', auth.requireAdmin, AdminController.createProduct);
 router.get('/admin/san-pham/xoa/:id', auth.requireAdmin, AdminController.deleteProduct);
 router.get('/admin/nguoi-dung/xoa/:id', auth.requireAdmin, AdminController.deleteUser);

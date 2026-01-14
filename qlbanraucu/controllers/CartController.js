@@ -86,10 +86,30 @@ module.exports = {
 
             const promo = result[0];
             let discount = 0;
-            if (promo.phan_tram_giam > 0) discount = totalAmount * (promo.phan_tram_giam / 100);
-            else if (promo.so_tien_giam > 0) discount = promo.so_tien_giam;
 
+            // --- LOGIC MỚI: TÍNH TOÁN MỨC GIẢM TỐI ĐA ---
+            
+            // Trường hợp 1: Có giảm theo Phần trăm (%)
+            if (promo.phan_tram_giam > 0) {
+                // B1: Tính số tiền giảm theo %
+                discount = totalAmount * (promo.phan_tram_giam / 100);
+
+                // B2: Kiểm tra mức trần (Giới hạn tối đa)
+                // Nếu cột 'so_tien_giam' có giá trị > 0, ta coi đó là mức giảm tối đa
+                if (promo.so_tien_giam > 0 && discount > promo.so_tien_giam) {
+                    discount = promo.so_tien_giam;
+                }
+            } 
+            // Trường hợp 2: Chỉ giảm tiền cố định (Không có %)
+            else if (promo.so_tien_giam > 0) {
+                discount = promo.so_tien_giam;
+            }
+
+            // Đảm bảo số tiền giảm không vượt quá tổng giá trị đơn hàng
             if(discount > totalAmount) discount = totalAmount;
+
+            // Làm tròn số tiền giảm cho đẹp
+            discount = Math.round(discount);
 
             res.json({ success: true, discount, promoId: promo.ma_khuyen_mai, message: `Giảm ${discount.toLocaleString()}đ` });
         });

@@ -12,7 +12,9 @@
             <img src="/img/o_bg-remover-gen_2rbFSjxWiA0b8V11LXqgNGl4BsO.png" class="logo-admin" alt="Nam Fruit Logo">
         </a>
         <h2>QUẢN TRỊ VIÊN</h2>
-        
+        <a href="/trang-chu" class="menu-item">
+            <i class="fa-solid fa-house"></i> Về trang chủ
+        </a>
         <a class="menu-item active" onclick="openTab('tab-sanpham')">
             <i class="fas fa-box"></i> Quản lý Sản phẩm
         </a>
@@ -217,42 +219,46 @@
         <div id="tab-khuyenmai" class="tab-content">
             <h1 style="color: #82b53f;">Mã Giảm Giá & Khuyến Mãi</h1>
             <button class="btn btn-add" onclick="toggleForm('form-km')">+ Thêm Mã KM</button>
+            
             <div id="form-km" class="box-add">
                 <form action="/admin/khuyen-mai/them" method="POST">
                     <div class="form-group">
                         <label>Mã Code (Viết liền, không dấu):</label>
                         <input type="text" name="ma_code" class="form-control" placeholder="VD: TET2025" required>
                     </div>
+                    
                     <div class="form-group" style="display: flex; gap: 20px;">
                         <div style="flex: 1;">
-                            <label>% Giảm:</label>
-                            <input type="number" name="phan_tram_giam" class="form-control" value="0">
+                            <label>% Giảm giá:</label>
+                            <input type="number" name="phan_tram_giam" class="form-control" value="0" min="0" max="100">
                         </div>
                         <div style="flex: 1;">
-                            <label>Hoặc Tiền Giảm (VNĐ):</label>
-                            <input type="number" name="so_tien_giam" class="form-control" value="0">
+                            <label>Tiền giảm (hoặc Tối đa nếu có %):</label>
+                            <input type="number" name="so_tien_giam" class="form-control" value="0" min="0">
                         </div>
                     </div>
+
                     <div class="form-group" style="display: flex; gap: 20px;">
                         <div style="flex: 1;">
                             <label>Ngày bắt đầu:</label>
-                            <input type="date" name="ngay_bat_dau" class="form-control">
+                            <input type="date" name="ngay_bat_dau" class="form-control" required>
                         </div>
                         <div style="flex: 1;">
                             <label>Ngày kết thúc:</label>
-                            <input type="date" name="ngay_ket_thuc" class="form-control">
+                            <input type="date" name="ngay_ket_thuc" class="form-control" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-add">Lưu Khuyến Mãi</button>
                 </form>
             </div>
+
             <table>
                 <thead>
                     <tr>
                         <th>Mã Code</th>
                         <th>Mức giảm</th>
                         <th>Thời hạn</th>
-                        <th>Trạng thái</th>
+                        <th style="text-align: center;">Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -260,28 +266,49 @@
                     <% if(promotions && promotions.length > 0) { %>
                         <% promotions.forEach(km => { %>
                         <tr>
-                            <td style="font-weight: bold; color: green;"><%= km.ma_code %></td>
+                            <td style="font-weight: bold; color: green; font-size: 16px;"><%= km.ma_code %></td>
                             <td>
-                                <% if(km.phan_tram_giam > 0) { %> Giảm <%= km.phan_tram_giam %>% <% } %>
-                                <% if(km.so_tien_giam > 0) { %> (-<%= km.so_tien_giam.toLocaleString() %>đ) <% } %>
+                                <% if(km.phan_tram_giam > 0) { %> 
+                                    <span style="color: #d35400; font-weight: bold;">Giảm <%= km.phan_tram_giam %>%</span>
+                                    <% if(km.so_tien_giam > 0) { %> 
+                                        <br><span style="font-size: 12px; color: #7f8c8d;">(Tối đa: <%= km.so_tien_giam.toLocaleString() %>đ)</span> 
+                                    <% } %>
+                                <% } else { %>
+                                    <span style="color: #d35400; font-weight: bold;">Giảm <%= km.so_tien_giam.toLocaleString() %>đ</span>
+                                <% } %>
                             </td>
                             <td>
-                                <%= km.ngay_bat_dau ? new Date(km.ngay_bat_dau).toLocaleDateString() : '...' %> 
-                                đến 
-                                <%= km.ngay_ket_thuc ? new Date(km.ngay_ket_thuc).toLocaleDateString() : '...' %>
+                                <div style="font-size: 13px;">
+                                    BĐ: <%= km.ngay_bat_dau ? new Date(km.ngay_bat_dau).toLocaleDateString('vi-VN') : '...' %> <br>
+                                    KT: <%= km.ngay_ket_thuc ? new Date(km.ngay_ket_thuc).toLocaleDateString('vi-VN') : '...' %>
+                                </div>
                             </td>
-                            <td>
-                                <% if(km.trang_thai == 1) { %> <span style="color: green;">Đang chạy</span> <% } else { %> <span style="color: red;">Dừng</span> <% } %>
+                            
+                            <td style="text-align: center;">
+                                <% if(km.trang_thai == 0) { %>
+                                    <span style="padding: 5px 10px; border-radius: 15px; background-color: #f39c12; color: white; font-size: 12px; font-weight: bold;">
+                                        <i class="fas fa-clock"></i> Sắp diễn ra
+                                    </span>
+                                <% } else if(km.trang_thai == 1) { %>
+                                    <span style="padding: 5px 10px; border-radius: 15px; background-color: #27ae60; color: white; font-size: 12px; font-weight: bold;">
+                                        <i class="fas fa-check-circle"></i> Đang chạy
+                                    </span>
+                                <% } else { %>
+                                    <span style="padding: 5px 10px; border-radius: 15px; background-color: #e74c3c; color: white; font-size: 12px; font-weight: bold;">
+                                        <i class="fas fa-times-circle"></i> Đã kết thúc
+                                    </span>
+                                <% } %>
                             </td>
+
                             <td>
-                                <a href="/admin/khuyen-mai/xoa/<%= km.ma_khuyen_mai %>" class="btn btn-del" onclick="return confirm('Xóa mã này?')">
+                                <a href="/admin/khuyen-mai/xoa/<%= km.ma_khuyen_mai %>" class="btn btn-del" onclick="return confirm('Xóa mã này? Lưu ý: Mã đã dùng trong đơn hàng cũ sẽ không thể xóa!')">
                                     <i class="fas fa-trash"></i> Xóa
                                 </a>
                             </td>
                         </tr>
                         <% }) %>
                     <% } else { %>
-                        <tr><td colspan="5" style="text-align: center;">Chưa có mã khuyến mãi nào.</td></tr>
+                        <tr><td colspan="5" style="text-align: center; padding: 20px;">Chưa có mã khuyến mãi nào.</td></tr>
                     <% } %>
                 </tbody>
             </table>

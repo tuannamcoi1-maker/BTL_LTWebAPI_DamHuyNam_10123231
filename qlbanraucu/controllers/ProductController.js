@@ -2,25 +2,25 @@ const ProductModel = require('../models/ProductModel');
 
 module.exports = {
     // [API] Lấy danh sách sản phẩm (có hỗ trợ lọc ?danhmuc=...)
+    // Cập nhật lại ProductController.js
     apiGetProducts: (req, res) => {
         const catId = req.query.danhmuc;
+        const keyword = req.query.q; // Lấy từ khóa tìm kiếm
         
         const handleResponse = (err, products) => {
-            if (err) return res.status(500).json({ success: false, message: "Lỗi cơ sở dữ liệu" });
+            if (err) return res.status(500).json({ success: false, message: "Lỗi DB" });
 
-            // Logic tính giá khuyến mãi
-            const data = products.map(p => {
-                let phanTram = 0;
-                if(p.gia_goc && p.gia_goc > p.gia_ban) {
-                    phanTram = Math.round(((p.gia_goc - p.gia_ban) / p.gia_goc) * 100);
-                }
-                return { ...p, phan_tram_giam: phanTram };
-            });
-
+            const data = products.map(p => ({
+                ...p,
+                phan_tram_giam: p.khuyen_mai || 0 // Dùng luôn cột khuyến mãi từ DB mới
+            }));
             res.json({ success: true, count: data.length, data: data });
         };
 
-        if (catId) {
+        if (keyword) {
+            // Nếu có từ khóa -> Gọi hàm search
+            ProductModel.searchProducts(keyword, handleResponse);
+        } else if (catId) {
             ProductModel.getProductsByCategory(catId, handleResponse);
         } else {
             ProductModel.getAllProducts(handleResponse);
