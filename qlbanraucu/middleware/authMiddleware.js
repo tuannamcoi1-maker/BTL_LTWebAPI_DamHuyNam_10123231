@@ -43,4 +43,5 @@ module.exports = {
             res.status(403).send('<h1>Lỗi 403: Bạn không có quyền truy cập trang này</h1><a href="/trang-chu">Về trang chủ</a>');
         }
     }
+    
 };

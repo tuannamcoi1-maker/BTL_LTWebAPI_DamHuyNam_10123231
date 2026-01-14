@@ -50,6 +50,89 @@ JSON
     "email": "nguyenvana@gmail.com",
     "mat_khau": "123456"
 }
+
+2. (b) BƯỚC 1: Đăng nhập (Để lấy Session)
+Trước tiên, bạn cần đăng nhập để Postman lưu Cookie phiên làm việc.
+
+Method: POST
+
+URL: http://localhost:3000/api/login
+
+Body (chọn raw -> JSON):
+
+JSON
+
+{
+    "email": "khachhang@gmail.com",
+    "mat_khau": "123456"
+}
+Nhấn Send.
+
+Kiểm tra: Nếu thấy thông báo "Đăng nhập thành công", bạn chuyển sang Bước 2 (Postman sẽ tự động lưu Cookie cho các request sau).
+
+BƯỚC 2: Gọi API Cập nhật thông tin
+Sau khi đã đăng nhập thành công ở Bước 1, bạn tạo một tab mới trong Postman để test update:
+
+Method: POST
+
+URL: http://localhost:3000/api/user/update
+
+Body (chọn raw -> JSON):
+
+Bạn có 2 trường hợp để test (dựa trên code AuthController.js của bạn):
+
+Trường hợp A: Chỉ đổi thông tin cá nhân (Không đổi mật khẩu)
+Dữ liệu gửi lên gồm họ tên, sđt, địa chỉ, email.
+
+JSON
+
+{
+    "ho_ten": "Nguyễn Văn A (Đã sửa)",
+    "so_dien_thoai": "0999999999",
+    "email": "khachhang@gmail.com",
+    "dia_chi": "Hồ Chí Minh"
+}
+Trường hợp B: Đổi mật khẩu (Cần mật khẩu cũ)
+Nếu muốn đổi mật khẩu, bạn bắt buộc phải gửi kèm mat_khau_cu chính xác.
+
+JSON
+
+{
+    "ho_ten": "Nguyễn Văn A",
+    "so_dien_thoai": "0987654321",
+    "email": "khachhang@gmail.com",
+    "dia_chi": "Hà Nội",
+    "mat_khau_cu": "123456", 
+    "mat_khau_moi": "matkhaumoi123"
+}
+Nhấn Send.
+
+Kết quả mong đợi:
+Thành công:
+
+JSON
+
+{
+    "success": true,
+    "message": "Cập nhật thông tin thành công!"
+}
+Thất bại (Nếu sai mật khẩu cũ):
+
+JSON
+
+{
+    "success": false,
+    "message": "Mật khẩu cũ không đúng!"
+}
+Thất bại (Nếu quên Bước 1):
+
+JSON
+
+{
+    "success": false,
+    "message": "Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục."
+}
+
 3. Đăng xuất
 
 Method: GET
@@ -182,7 +265,15 @@ Nếu thành công: Trả về {"success": true, "ma_hoa_don": ...}.
 
 Nếu thất bại: Trả về lỗi (ví dụ: "Giỏ hàng trống", "Lỗi tạo hóa đơn").
 
+13. Xem lịch sử đơn hàng của tôi
 
+Đây là API bạn vừa thêm để khách hàng xem lại các đơn đã đặt.
+
+Method: GET
+
+URL: http://localhost:3000/api/user/orders
+
+Yêu cầu: Phải đăng nhập trước (API số 2).
 
 
 PHẦN 3: ADMIN - QUẢN LÝ (Cần đăng nhập tài khoản Admin)
@@ -362,3 +453,13 @@ Các giá trị action hợp lệ:
 "xac_nhan": Chuyển sang "Đã xác nhận".
 "huy": Hủy đơn hàng.
 "thanh_toan": Xác nhận đã thanh toán/hoàn tất.
+
+31. Xem lịch sử giao dịch (Đã hoàn thành)
+
+API này để nhân viên xem lại các đơn đã thanh toán thành công.
+
+Method: GET
+
+URL: http://localhost:3000/api/staff/history
+
+Lưu ý: Nếu hàm StaffController.listHistory trả về res.render, kết quả trong Postman sẽ là mã HTML của trang web thay vì JSON. Điều này là bình thường nếu bạn chưa viết hàm API riêng trả về JSON cho phần này.

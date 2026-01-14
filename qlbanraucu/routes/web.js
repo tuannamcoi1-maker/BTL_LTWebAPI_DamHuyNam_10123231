@@ -19,9 +19,9 @@ router.get('/trang-chu', HomeController.index);
 router.get('/chi-tiet-san-pham/:id', HomeController.detail);
 
 // Auth
-router.get('/dang-nhap', AuthController.loginPage);
-router.post('/dang-nhap', AuthController.login);
-router.get('/dang-ky', AuthController.registerPage);
+router.get('/dang-nhap',  AuthController.loginPage);
+router.post('/dang-nhap',  AuthController.login);
+router.get('/dang-ky',  AuthController.registerPage);
 router.get('/dang-xuat', AuthController.logout);
 // tài khoản
 router.get('/tai-khoan', auth.requireLogin, AuthController.profilePage); // Xem trang

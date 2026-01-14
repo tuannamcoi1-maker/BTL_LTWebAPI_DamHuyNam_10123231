@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 // --- IMPORT CÁC CONTROLLER ---
-var AuthController = require('../controllers/AuthController');
+var AuthController = require('../controllers/authController');
 var CartController = require('../controllers/CartController');
 var AdminController = require('../controllers/AdminController');
 var StaffController = require('../controllers/StaffController');
@@ -36,11 +36,7 @@ router.post('/cart/apply-coupon', auth.requireLogin, CartController.applyCoupon)
 // Thanh toán
 router.post('/cart/checkout', auth.requireLogin, CartController.checkout);
 // Lấy lịch sử đơn hàng của người dùng
-router.get('/user/orders', auth.requireLogin, (req, res) => {
-    UserModel.getOrdersByUserId(req.session.user.ma_nguoi_dung, (err, orders) => {
-        res.json({ success: !err, data: orders || [] });
-    });
-});
+router.get('/user/orders', auth.requireLogin, AuthController.apiGetOrderHistory);
 // ============================================
 // 3. ADMIN API (Quản trị viên)
 // ============================================

@@ -137,5 +137,16 @@ module.exports = {
                 orderId: orderId 
             });
         });
+    },
+    apiGetOrderHistory: (req, res) => {
+        // Lấy ID từ session (đã qua middleware auth.requireLogin kiểm duyệt)
+        const userId = req.session.user.ma_nguoi_dung;
+        
+        UserModel.getOrdersByUserId(userId, (err, orders) => {
+            if (err) {
+                return res.json({ success: false, message: "Lỗi lấy dữ liệu: " + err.message });
+            }
+            res.json({ success: true, data: orders || [] });
+        });
     }
 };

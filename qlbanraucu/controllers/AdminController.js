@@ -21,7 +21,6 @@ function handleDeleteResponse(req, res, err, redirectUrl, successMsg, errorMsgCo
             return res.redirect(`${redirectUrl}?status=error&message=${encodeURIComponent(finalMsg)}`);
         }
     }
-
     // Nếu thành công
     if (isApi) {
         return res.json({ success: true, message: successMsg });
